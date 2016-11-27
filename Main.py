@@ -14,11 +14,13 @@ except ImportError, err:
     sys.exit(2)
 
 
-def debug(foo):
-    if hasattr(foo, "__str__"):
-        print str(foo)
-    else:
-        print foo.__class__.__name__
+def debug(*args):
+    for foo in args:
+        if hasattr(foo, "__str__"):
+            print str(foo),
+        else:
+            print foo.__class__.__name__,
+    print
 
 
 def load_png(name):  # --> Surface, Rect
@@ -39,21 +41,33 @@ class Rozgrywka:
     """klasa reprezentujaca szachownice i calą jej zawartość"""
     def __init__(self):
         self.image, self.rect = load_png("szachownica.png")
+        render_queue.append(self)  # renderuj statyczne elementy
 
-        pionki = list()
-        pionki.append(Pionek((5, 5), (self.rect.width/8, self.rect.height/8)))
+        self.pionki = list()  # lista wszystkich zawierajaca wszystkie pionki
+        self.pionki.append(Pionek((self.rect.width/8, self.rect.height/8), (5, 5)))
 
-        for foo in pionki:
-            self.lista_pionkow = pygame.sprite.RenderPlain(foo)
+        self.lista_pionkow = pygame.sprite.RenderPlain(self.pionki)  # Uchwyt slużący do renderowania pionków
 
-        render_queue.append(self)
+        self.przenoszenie = -1
 
     def update(self):
         self.lista_pionkow.update()
         self.lista_pionkow.draw(screen)
 
     def click(self, pos):
-        debug("klik")
+        debug("[klik]: ", pos)
+        if self.przenoszenie != -1:
+            debug("[klik]: odlozenie!")
+            screen.blit(staticbackground, self.przenoszenie.rect, self.przenoszenie.rect)
+            self.przenoszenie.move(pos[0]/(self.rect.width/8), pos[1]/(self.rect.height/8))
+            self.przenoszenie = -1
+            self.update()
+
+        else:
+            for pionek in self.pionki:
+                if pionek.rect.collidepoint(pos):
+                    debug("[klik]: przenoszenie!")
+                    self.przenoszenie = pionek
 
     def przesun_pionek(self, pionek):
         pionek.move(2, 2)
@@ -73,12 +87,13 @@ class Pionek(pygame.sprite.Sprite):
 
     def move(self, x, y):
         self.rect.x = x * self.rect.width
-        self.rect.y = (7-y) * self.rect.height
+        self.rect.y = y * self.rect.height
 
 
 def main():
     global render_queue
     global screen
+    global staticbackground
     render_queue = []  # kolejka obiektow czekajacy na renderowanie
 
     # Initialise screen
@@ -86,31 +101,32 @@ def main():
     screen = pygame.display.set_mode((1000, 700))
     pygame.display.set_caption('Warcaby')
 
-    # Fill background
-    background = pygame.Surface(screen.get_size())
-    background = background.convert()
-    background.fill((0, 0, 0))
-    background.blit(*load_png("tlo.png"))
-    render_queue.append(background)
+    # Fill staticbackground
+    staticbackground = pygame.Surface(screen.get_size())
+    staticbackground = staticbackground.convert()
+    staticbackground.fill((0, 0, 0))
+    staticbackground.blit(*load_png("tlo.png"))
 
     # Inicalizuj szachownice
 
-    glowna_Rozgrywka = Rozgrywka()
+    glowna_rozgrywka = Rozgrywka()
 
-    # Wyrenderuj wszystkie nie ruchome elementy do (Surface) screen
+    # Wyrenderuj wszystkie nie ruchome elementy do (Surface) staticbackground
     for render in render_queue:
         if isinstance(render, pygame.Surface):
-            debug(render)
-            screen.blit(render, (0, 0))
+            debug("[static render]:", render)
+            staticbackground.blit(render, (0, 0))
         elif isinstance(render, tuple) and isinstance(render[0], pygame.Surface) and isinstance(render[1], pygame.Rect):
-            debug(render)
-            screen.blit(render[0], render[1])
+            debug("[static render]:", render)
+            staticbackground.blit(render[0], render[1])
         else:
-            debug(render)
-            screen.blit(render.image, render.rect)
+            debug("[static render]:", render)
+            staticbackground.blit(render.image, render.rect)
+
+    screen.blit(staticbackground, (0, 0))
 
     # renderuj zawartosc szachownicy
-    glowna_Rozgrywka.update()
+    glowna_rozgrywka.update()
 
     # pierwsza klatka
     pygame.display.flip()
@@ -126,8 +142,10 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT:
                 return
-            if event.type == MOUSEBUTTONDOWN and glowna_Rozgrywka.rect.collidepoint(event.pos):
-                glowna_Rozgrywka.click(event.pos)
+            if event.type == MOUSEBUTTONDOWN and glowna_rozgrywka.rect.collidepoint(event.pos):
+                glowna_rozgrywka.click(event.pos)
+            if event.type == MOUSEBUTTONUP and glowna_rozgrywka.rect.collidepoint(event.pos) and glowna_rozgrywka.przenoszenie != -1:
+                glowna_rozgrywka.click(event.pos)
         pygame.display.flip()
 
 if __name__ == '__main__':
