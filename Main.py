@@ -17,8 +17,6 @@ except ImportError, err:
 
 
 def main():
-    render_queue = []  # kolejka obiektow czekajacy na renderowanie
-
     # Initialise screen
     pygame.init()
     screen = pygame.display.set_mode((1000, 700))
