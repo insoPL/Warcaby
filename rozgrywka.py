@@ -13,15 +13,22 @@ class Rozgrywka:
         self.pionki = list()  # lista zawierajaca wszystkie pionki
 
         for foo in range(0, 8, 2):  # dodaj pionki
-            self.pionki.append(Pionek((self.rect.width/8, self.rect.height/8), (foo+1, 7), 0))  # czarne - dol ekranu
-            self.pionki.append(Pionek((self.rect.width/8, self.rect.height/8), (foo, 6), 0))
+            self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 7), 0))  # czarne - dol ekranu
+            self.pionki.append(Pionek(self.size_of_one_tile, (foo, 6), 0))
 
-            self.pionki.append(Pionek((self.rect.width/8, self.rect.height/8), (foo+1, 1), 1))  # biale
-            self.pionki.append(Pionek((self.rect.width/8, self.rect.height/8), (foo, 0), 1))
+            self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 1), 1))  # biale
+            self.pionki.append(Pionek(self.size_of_one_tile, (foo, 0), 1))
+
+        oznaczenie = Oznaczenie(self.size_of_one_tile, (0, 0))
 
         self.renderuj_pionki = pygame.sprite.RenderPlain(self.pionki)  # Uchwyt slużący do renderowania pionków
+        self.renderuj_pionki.add(oznaczenie)
 
         self.przenoszenie = -1
+
+    @property
+    def size_of_one_tile(self):
+        return self.rect.width/8, self.rect.height/8
 
     def update(self):
         self.renderuj_pionki.update()
@@ -94,6 +101,27 @@ def mozliwe_ruchy(cords, arg_pionki):  # mozliwe ruchy dla pionka z dana liczba 
     # TO-DO dodać możliwość bica w tył i zabezpieczyć przed biciem swoich
 
     return zwracana_lista
+
+
+class Oznaczenie(pygame.sprite.Sprite):
+    def __init__(self, size, cords):
+        pygame.sprite.Sprite.__init__(self)
+        self.cords = cords
+        self.size = size
+
+        self.image, rect = load_png("oznaczenie.png")
+
+        # Skaluj oznaczenie
+        self.image = pygame.transform.scale(self.image, size)
+
+        self.move(*cords)
+
+    def move(self, x, y):
+        self.cords = (x, y)
+
+    @property
+    def rect(self):
+        return pygame.Rect((self.cords[0] * self.size[0], (7 - self.cords[1]) * self.size[1]), self.size)
 
 
 class Pionek(pygame.sprite.Sprite):
