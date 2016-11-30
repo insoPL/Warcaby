@@ -74,8 +74,8 @@ def czy_jest_na_polu(x, y, pionki):
 
 def mozliwe_ruchy(cords, arg_pionki):  # mozliwe ruchy dla pionka z dana liczba pionkow
     kopia_pionki = dict(arg_pionki)
-    if kopia_pionki.has_key(cords):
-      del kopia_pionki[cords]
+    if kopia_pionki in cords:
+        del kopia_pionki[cords]
 
     zwracana_lista = list()
     debug("Mozliwe bicia z:", cords)
@@ -91,6 +91,7 @@ def mozliwe_ruchy(cords, arg_pionki):  # mozliwe ruchy dla pionka z dana liczba 
         zwracana_lista.append((cords[0]+2, cords[1]+2))
         debug("bij prawaka")
         zwracana_lista.append(mozliwe_ruchy((cords[0]+2, cords[1]+2), arg_pionki))
+    # TO-DO dodać możliwość bica w tył i zabezpieczyć przed biciem swoich
 
     return zwracana_lista
 

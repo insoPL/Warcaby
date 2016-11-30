@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
 
 try:
-    import sys
-    import random
-    import math
-    import os
-    import getopt
-    import pygame
     from socket import *
     from pygame.locals import *
     from tools import *
@@ -21,6 +15,7 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((1000, 700))
     pygame.display.set_caption('Warcaby')
+    pygame.display.set_icon(load_png("pionek.png")[0])
 
     # Fill background
     staticbackground = pygame.Surface(screen.get_size())
