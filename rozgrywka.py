@@ -21,10 +21,13 @@ class Rozgrywka:
             self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 1), 1))  # biale
             self.pionki.append(Pionek(self.size_of_one_tile, (foo, 0), 1))
 
-        oznaczenie = Oznaczenie(self.size_of_one_tile, (0, 0))
+        self.oznaczenie = list()
+        self.renderuj_oznaczenie = pygame.sprite.RenderPlain(self.oznaczenie)
 
         self.renderuj_pionki = pygame.sprite.RenderPlain(self.pionki)  # Uchwyt slużący do renderowania pionków
-        self.renderuj_pionki.add(oznaczenie)
+
+        self.oznacz((0, 0), (1, 1))
+        self.odznacz()
 
         self.przenoszenie = -1
 
@@ -36,13 +39,27 @@ class Rozgrywka:
         self.renderuj_pionki.update()
         self.renderuj_pionki.draw(self.screen)
 
+    def oznacz(self, *cords):  # cords - lista krotek (x, y)
+        for cord in cords:
+            self.oznaczenie.append(Oznaczenie(self.size_of_one_tile, cord))
+        self.renderuj_oznaczenie.add(self.oznaczenie)
+        self.renderuj_oznaczenie.update()
+        self.renderuj_oznaczenie.draw(self.screen)
+
+    def odznacz(self):
+        self.renderuj_oznaczenie.clear(self.screen, self.image)
+        self.oznaczenie = list()
+        self.renderuj_oznaczenie.empty()
+        self.renderuj_oznaczenie.update()
+        self.renderuj_oznaczenie.draw(self.screen)
+
     def click(self, pos):
         debug("[klik]: ", pos)
 
         if self.przenoszenie != -1:  # JEST w trybie przenoszenia
             debug("[klik]: odlozenie!")
             self.screen.blit(self.image, self.przenoszenie.rect, self.przenoszenie.rect)
-            self.przesun_pionek(self.przenoszenie, pos[0]/(self.rect.width/8), 7-(pos[1]/(self.rect.height/8)))
+            self.sprobuj_przesunac_pionek(self.przenoszenie, pos[0] / (self.rect.width / 8), 7 - (pos[1] / (self.rect.height / 8)))
             self.przenoszenie = -1
             self.update()
 
@@ -52,7 +69,7 @@ class Rozgrywka:
                     debug("[klik]: przenoszenie!")
                     self.przenoszenie = pionek
 
-    def przesun_pionek(self, pionek, x, y):
+    def sprobuj_przesunac_pionek(self, pionek, x, y):
         ox, oy = pionek.cords
         if pionek.color == 0:  # jesli pionek jest czarny
             if oy == y+1 and (ox == x-1 or ox == x+1):
