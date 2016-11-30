@@ -48,12 +48,12 @@ class Rozgrywka:
         if pionek.color == 0:  # jesli pionek jest czarny
             if oy == y+1 and (ox == x-1 or ox == x+1):
                 pionek.move(x, y)
-             #uproszczona_tablica))
+                debug(mozliwe_ruchy(pionek.cords, self.slownik_uproszczonych_pionkow))
 
         elif pionek.color == 1:
             if oy == y-1 and (ox == x-1 or ox == x+1):
                 pionek.move(x, y)
-              #  debug(mozliwe_ruchy(pionek, self.uproszczona_tablica))
+                debug(mozliwe_ruchy(pionek.cords, self.slownik_uproszczonych_pionkow))
 
     @property
     def slownik_uproszczonych_pionkow(self):
@@ -62,31 +62,36 @@ class Rozgrywka:
             bar[foo.cords] = foo.color
         return bar
 
+
 def czy_jest_na_polu(x, y, pionki):
     if x > 7 or y > 7 or x < 0 or y < 0:
         return -1
-    for foo in pionki:
-        if foo.cords == (x, y):
+    for foo in pionki.keys():
+        if foo == (x, y):
             return 1
     return 0
 
 
-def mozliwe_ruchy(pionek, arg_pionki):  # mozliwe ruchy dla pionka z dana liczba pionkow
-    kopia_pionki = list(arg_pionki)
-    kopia_pionki.remove(pionek)
+def mozliwe_ruchy(cords, arg_pionki):  # mozliwe ruchy dla pionka z dana liczba pionkow
+    kopia_pionki = dict(arg_pionki)
+    if kopia_pionki.has_key(cords):
+      del kopia_pionki[cords]
 
     zwracana_lista = list()
-    pos = pionek.cords
-    debug("Mozliwe ruchy", pos)
-    if czy_jest_na_polu(pos[0]-1, pos[1]+1, kopia_pionki) == 1 and czy_jest_na_polu(pos[0]-2, pos[1]+2, kopia_pionki) == 0:
-        # Przeciwnik na lewo do przodu i wolne miejsce za nim: mozna bic!
+    debug("Mozliwe bicia z:", cords)
 
+    if czy_jest_na_polu(cords[0]-1, cords[1]+1, kopia_pionki) == 1 and czy_jest_na_polu(cords[0]-2, cords[1]+2, kopia_pionki) == 0:
+        # Przeciwnik na lewo do przodu i wolne miejsce za nim: mozna bic!
+        zwracana_lista.append((cords[0]-2, cords[1]+2)) == 1
         debug("bij lewaka")
-        zwracana_lista.append((pos[0]-2, pos[1]-2)) == 1
-    if czy_jest_na_polu(pos[0]+1, pos[1]+1, kopia_pionki) and czy_jest_na_polu(pos[0]+2, pos[1]+2, kopia_pionki) == 0:
+        zwracana_lista.append(mozliwe_ruchy((cords[0]-2, cords[1]+2), arg_pionki))
+
+    if czy_jest_na_polu(cords[0]+1, cords[1]+1, kopia_pionki) and czy_jest_na_polu(cords[0]+2, cords[1]+2, kopia_pionki) == 0:
         # Przeciwnik na prawo do przodu i wolne miejsce za nim: mozna bic!
-        zwracana_lista.append((pos[0]+2, pos[1]-2))
+        zwracana_lista.append((cords[0]+2, cords[1]+2))
         debug("bij prawaka")
+        zwracana_lista.append(mozliwe_ruchy((cords[0]+2, cords[1]+2), arg_pionki))
+
     return zwracana_lista
 
 
