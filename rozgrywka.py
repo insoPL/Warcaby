@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from tools import *
+from pionek import *
+from oznaczenie import *
 import pygame
 
 
@@ -101,50 +103,3 @@ def mozliwe_ruchy(cords, arg_pionki):  # mozliwe ruchy dla pionka z dana liczba 
     # TO-DO dodać możliwość bica w tył i zabezpieczyć przed biciem swoich
 
     return zwracana_lista
-
-
-class Oznaczenie(pygame.sprite.Sprite):
-    def __init__(self, size, cords):
-        pygame.sprite.Sprite.__init__(self)
-        self.cords = cords
-        self.size = size
-
-        self.image, rect = load_png("oznaczenie.png")
-
-        # Skaluj oznaczenie
-        self.image = pygame.transform.scale(self.image, size)
-
-        self.move(*cords)
-
-    def move(self, x, y):
-        self.cords = (x, y)
-
-    @property
-    def rect(self):
-        return pygame.Rect((self.cords[0] * self.size[0], (7 - self.cords[1]) * self.size[1]), self.size)
-
-
-class Pionek(pygame.sprite.Sprite):
-    def __init__(self,  size, cords, color):  # color 0-black 1-white
-        pygame.sprite.Sprite.__init__(self)
-
-        self.color = color
-        self.cords = cords
-
-        self.size = size
-
-        self.image, rect = load_png("pionek.png")
-
-        # Skaluj pionek
-        self.image = pygame.transform.scale(self.image, size)
-        self.move(*cords)
-
-    @property
-    def rect(self):
-        return pygame.Rect((self.cords[0]*self.size[0], (7-self.cords[1])*self.size[1]), self.size)
-
-    def getpos(self):
-        return self.cords
-
-    def move(self, x, y):
-        self.cords = (x, y)
