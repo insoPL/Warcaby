@@ -21,8 +21,8 @@ class Rozgrywka:
             self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 1), 1))  # biale
             self.pionki.append(Pionek(self.size_of_one_tile, (foo, 0), 1))
 
-        self.oznaczenie = list()
-        self.renderuj_oznaczenie = pygame.sprite.RenderPlain(self.oznaczenie)
+        self.oznaczone = list()
+        self.renderuj_oznaczenie = pygame.sprite.RenderPlain(self.oznaczone)
 
         self.renderuj_pionki = pygame.sprite.RenderPlain(self.pionki)  # Uchwyt slużący do renderowania pionków
 
@@ -41,14 +41,14 @@ class Rozgrywka:
 
     def oznacz(self, *cords):  # cords - lista krotek (x, y)
         for cord in cords:
-            self.oznaczenie.append(Oznaczenie(self.size_of_one_tile, cord))
-        self.renderuj_oznaczenie.add(self.oznaczenie)
+            self.oznaczone.append(Oznaczenie(self.size_of_one_tile, cord))
+        self.renderuj_oznaczenie.add(self.oznaczone)
         self.renderuj_oznaczenie.update()
         self.renderuj_oznaczenie.draw(self.screen)
 
     def odznacz(self):
         self.renderuj_oznaczenie.clear(self.screen, self.image)
-        self.oznaczenie = list()
+        self.oznaczone = list()
         self.renderuj_oznaczenie.empty()
         self.renderuj_oznaczenie.update()
         self.renderuj_oznaczenie.draw(self.screen)
@@ -59,27 +59,24 @@ class Rozgrywka:
         if self.przenoszenie != -1:  # JEST w trybie przenoszenia
             debug("[klik]: odlozenie!")
             self.screen.blit(self.image, self.przenoszenie.rect, self.przenoszenie.rect)
-            self.sprobuj_przesunac_pionek(self.przenoszenie, pos[0] / (self.rect.width / 8), 7 - (pos[1] / (self.rect.height / 8)))
+            if self.czy_jest_oznaczony(pos[0] / (self.rect.width / 8), 7 - (pos[1] / (self.rect.height / 8))):
+                self.przenoszenie.move(pos[0] / (self.rect.width / 8), 7 - (pos[1] / (self.rect.height / 8)))
             self.przenoszenie = -1
+            self.odznacz()
             self.update()
 
         else:  # NIE jest w trybie przenoszenia
             for pionek in self.pionki:
-                if pionek.rect.collidepoint(pos):
+                if pionek.rect.collidepoint(pos):  # jesli na klikniętym polu jest klocek
                     debug("[klik]: przenoszenie!")
-                    self.przenoszenie = pionek
+                    self.przenoszenie = pionek  # przejdz w tryb przenoszenia
+                    self.oznacz(*mozliwe_ruchy(pionek.cords, pionek.color, self.slownik_uproszczonych_pionkow))
 
-    def sprobuj_przesunac_pionek(self, pionek, x, y):
-        ox, oy = pionek.cords
-        if pionek.color == 0:  # jesli pionek jest czarny
-            if oy == y+1 and (ox == x-1 or ox == x+1):
-                pionek.move(x, y)
-                debug(mozliwe_ruchy(pionek.cords, self.slownik_uproszczonych_pionkow))
-
-        elif pionek.color == 1:
-            if oy == y-1 and (ox == x-1 or ox == x+1):
-                pionek.move(x, y)
-                debug(mozliwe_ruchy(pionek.cords, self.slownik_uproszczonych_pionkow))
+    def czy_jest_oznaczony(self, x, y):
+        for ozn in self.oznaczone:
+            if ozn.cords == (x, y):
+                return True
+        return False
 
     @property
     def slownik_uproszczonych_pionkow(self):
@@ -98,7 +95,19 @@ def czy_jest_na_polu(x, y, pionki):
     return 0
 
 
-def mozliwe_ruchy(cords, arg_pionki):  # mozliwe ruchy dla pionka z dana liczba pionkow
+def mozliwe_ruchy(cords, color, pionki):
+    return_list = list()
+    if color == 1 or color == 0:  # jesli pionek jest czarny
+        if czy_jest_na_polu(cords[0]-1, cords[1]+1, pionki) == 0:
+            return_list.append((cords[0]-1, cords[1]+1))
+
+        if czy_jest_na_polu(cords[0]+1, cords[1]+1, pionki) == 0:
+            return_list.append((cords[0]+1, cords[1]+1))
+    return_list.extend(mozliwe_ruchy_bijace(cords, pionki))
+    return return_list
+
+
+def mozliwe_ruchy_bijace(cords, arg_pionki):  # mozliwe ruchy dla pionka z dana liczba pionkow
     kopia_pionki = dict(arg_pionki)
     if kopia_pionki in cords:
         del kopia_pionki[cords]
@@ -110,13 +119,13 @@ def mozliwe_ruchy(cords, arg_pionki):  # mozliwe ruchy dla pionka z dana liczba 
         # Przeciwnik na lewo do przodu i wolne miejsce za nim: mozna bic!
         zwracana_lista.append((cords[0]-2, cords[1]+2)) == 1
         debug("bij lewaka")
-        zwracana_lista.append(mozliwe_ruchy((cords[0]-2, cords[1]+2), arg_pionki))
+        zwracana_lista.extend(mozliwe_ruchy_bijace((cords[0] - 2, cords[1] + 2), arg_pionki))
 
     if czy_jest_na_polu(cords[0]+1, cords[1]+1, kopia_pionki) and czy_jest_na_polu(cords[0]+2, cords[1]+2, kopia_pionki) == 0:
         # Przeciwnik na prawo do przodu i wolne miejsce za nim: mozna bic!
         zwracana_lista.append((cords[0]+2, cords[1]+2))
         debug("bij prawaka")
-        zwracana_lista.append(mozliwe_ruchy((cords[0]+2, cords[1]+2), arg_pionki))
+        zwracana_lista.extend(mozliwe_ruchy_bijace((cords[0] + 2, cords[1] + 2), arg_pionki))
     # TO-DO dodać możliwość bica w tył i zabezpieczyć przed biciem swoich
 
     return zwracana_lista
