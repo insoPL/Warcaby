@@ -25,6 +25,15 @@ def load_png(name):  # --> Surface, Rect
         raise SystemExit, message
     return image, image.get_rect()
 
+
 def filtruj_duplikaty(arg):
     se = set(arg)
     return list(se)
+
+
+def srednia(pos1, pos2):
+    return (pos1[0]+pos2[0])/2, pos1[1]+pos2[1]/2
+
+
+def minus(pos1, pos2):
+    return pos1[0]-pos2[0], pos1[1]-pos2[1]

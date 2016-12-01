@@ -51,7 +51,7 @@ class Rozgrywka:
         self.renderuj_oznaczenie.clear(self.screen, self.image)
         self.oznaczone = list()
         self.renderuj_oznaczenie.empty()
-        self.renderuj_oznaczenie.update()
+        self.renderuj_oznaczenie.update()  # nie potrzebne?
         self.renderuj_oznaczenie.draw(self.screen)
 
     def get_pionek(self, x, y):
@@ -70,6 +70,9 @@ class Rozgrywka:
             debug("[klik]: odlozenie!")
             self.screen.blit(self.image, self.przenoszenie.rect, self.przenoszenie.rect)
             if self.czy_jest_oznaczony(*self.pos_to_cords(pos)):
+                foo = self.znajdz_bitego(self.przenoszenie.cords, self.pos_to_cords(pos))
+                if foo != 0:
+                    self.zbij(*foo)
                 self.przenoszenie.move(*self.pos_to_cords(pos))
                 self.kolejnosc = not self.kolejnosc
             self.przenoszenie = -1
@@ -89,6 +92,19 @@ class Rozgrywka:
                 return True
         return False
 
+    def znajdz_bitego(self, pos1, pos2):
+        if pos1[1]-pos2[1] == -2: # jesli biale
+            if pos1[0]-pos2[0] == 2:
+                return pos1[0]-1, pos1[1]+1
+            elif pos1[0]-pos2[0] == -2:
+                return pos1[0]+1, pos1[1]+1
+        if pos1[1]-pos2[1] == 2: # jesli czarne
+            if pos1[0]-pos2[0] == 2:
+                return pos1[0]-1, pos1[1]-1
+            elif pos1[0]-pos2[0] == -2:
+                return pos1[0]+1, pos1[1]-1
+        return 0
+
     @property
     def slownik_uproszczonych_pionkow(self):
         bar = dict()
@@ -96,16 +112,13 @@ class Rozgrywka:
             bar[foo.cords] = foo.color
         return bar
 
-    def zbij(self, pionek):
-        if pionek not in self.pionki:
-            debug("nie zbije tego pionka")
-            return -1
-        else:
-            self.pionki.remove(pionek)
-            self.renderuj_pionki.remove(pionek)
-            self.renderuj_pionki.clear(self.screen, self.image)
-            self.update()
-            debug("ZBIJ")
+    def zbij(self, x, y):
+        for pionek in self.pionki:
+            if pionek.cords == (x, y):
+                self.renderuj_pionki.remove(pionek)
+                self.screen.blit(self.image, pionek.rect, pionek.rect)
+                self.pionki.remove(pionek)
+
 
 
 def jaki_kolo_jest_na_polu(x, y, pionki):
