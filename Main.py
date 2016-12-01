@@ -15,7 +15,7 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((1000, 700))
     pygame.display.set_caption('Warcaby')
-    pygame.display.set_icon(load_png("pionek.png")[0])
+    pygame.display.set_icon(load_png("pionek_czarny.png")[0])
 
     # Fill background
     staticbackground = pygame.Surface(screen.get_size())

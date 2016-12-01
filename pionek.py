@@ -11,8 +11,12 @@ class Pionek(pygame.sprite.Sprite):
         self.cords = cords
 
         self.size = size
-
-        self.image, rect = load_png("pionek.png")
+        if color == 0:
+            self.image, rect = load_png("pionek_czarny.png")
+        elif color == 1:
+            self.image, rect = load_png("pionek_bialy.png")
+        else:
+            raise ValueError
 
         # Skaluj pionek
         self.image = pygame.transform.scale(self.image, size)

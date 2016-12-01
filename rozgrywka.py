@@ -97,17 +97,33 @@ def czy_jest_na_polu(x, y, pionki):
 
 def mozliwe_ruchy(cords, color, pionki):
     return_list = list()
-    if color == 1 or color == 0:  # jesli pionek jest czarny
+    if color == 1:  # jesli pionek jest czarny
         if czy_jest_na_polu(cords[0]-1, cords[1]+1, pionki) == 0:
             return_list.append((cords[0]-1, cords[1]+1))
 
         if czy_jest_na_polu(cords[0]+1, cords[1]+1, pionki) == 0:
             return_list.append((cords[0]+1, cords[1]+1))
-    return_list.extend(mozliwe_ruchy_bijace(cords, pionki))
-    return return_list
+    if color == 0:
+        if czy_jest_na_polu(cords[0]-1, cords[1]-1, pionki) == 0:
+            return_list.append((cords[0]-1, cords[1]-1))
+
+        if czy_jest_na_polu(cords[0]+1, cords[1]-1, pionki) == 0:
+            return_list.append((cords[0]+1, cords[1]-1))
+
+    return_list.extend(mozliwe_ruchy_bijace(cords, color, pionki, []))
+
+    return filtruj_duplikaty(return_list)
 
 
-def mozliwe_ruchy_bijace(cords, arg_pionki):  # mozliwe ruchy dla pionka z dana liczba pionkow
+def filtruj_duplikaty(arg):
+    se = set(arg)
+    return list(se)
+
+
+def mozliwe_ruchy_bijace(cords, color, arg_pionki, obliczono_dla):  # mozliwe ruchy dla pionka z dana liczba pionkow
+    if cords in obliczono_dla:  # ograniczenie glebokosci rekurencji
+        return []
+    obliczono_dla.append(cords)
     kopia_pionki = dict(arg_pionki)
     if kopia_pionki in cords:
         del kopia_pionki[cords]
@@ -119,13 +135,22 @@ def mozliwe_ruchy_bijace(cords, arg_pionki):  # mozliwe ruchy dla pionka z dana 
         # Przeciwnik na lewo do przodu i wolne miejsce za nim: mozna bic!
         zwracana_lista.append((cords[0]-2, cords[1]+2)) == 1
         debug("bij lewaka")
-        zwracana_lista.extend(mozliwe_ruchy_bijace((cords[0] - 2, cords[1] + 2), arg_pionki))
+        zwracana_lista.extend(mozliwe_ruchy_bijace((cords[0] - 2, cords[1] + 2), color, arg_pionki, obliczono_dla))
 
     if czy_jest_na_polu(cords[0]+1, cords[1]+1, kopia_pionki) and czy_jest_na_polu(cords[0]+2, cords[1]+2, kopia_pionki) == 0:
         # Przeciwnik na prawo do przodu i wolne miejsce za nim: mozna bic!
         zwracana_lista.append((cords[0]+2, cords[1]+2))
         debug("bij prawaka")
-        zwracana_lista.extend(mozliwe_ruchy_bijace((cords[0] + 2, cords[1] + 2), arg_pionki))
-    # TO-DO dodać możliwość bica w tył i zabezpieczyć przed biciem swoich
+        zwracana_lista.extend(mozliwe_ruchy_bijace((cords[0] + 2, cords[1] + 2), color, arg_pionki, obliczono_dla))
+    if czy_jest_na_polu(cords[0]+1, cords[1]-1, kopia_pionki) and czy_jest_na_polu(cords[0]+2, cords[1]-2, kopia_pionki) == 0:
+        # Przeciwnik na prawo do przodu i wolne miejsce za nim: mozna bic!
+        zwracana_lista.append((cords[0]+2, cords[1]-2))
+        debug("bij prawaka")
+        zwracana_lista.extend(mozliwe_ruchy_bijace((cords[0] + 2, cords[1] - 2), color, arg_pionki, obliczono_dla))
+    if czy_jest_na_polu(cords[0]-1, cords[1]-1, kopia_pionki) == 1 and czy_jest_na_polu(cords[0]-2, cords[1]-2, kopia_pionki) == 0:
+        # Przeciwnik na lewo do przodu i wolne miejsce za nim: mozna bic!
+        zwracana_lista.append((cords[0]-2, cords[1]-2)) == 1
+        debug("bij lewaka")
+        zwracana_lista.extend(mozliwe_ruchy_bijace((cords[0] - 2, cords[1] - 2), color, arg_pionki, obliczono_dla))
 
     return zwracana_lista
