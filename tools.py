@@ -24,3 +24,7 @@ def load_png(name):  # --> Surface, Rect
         print 'Nie mozna wczytac:', fullname
         raise SystemExit, message
     return image, image.get_rect()
+
+def filtruj_duplikaty(arg):
+    se = set(arg)
+    return list(se)

@@ -11,6 +11,7 @@ class Rozgrywka:
         self.screen = screen
         self.image, self.rect = load_png("szachownica.png")
         self.screen.blit(self.image, self.rect)
+        self.kolejnosc = 1  # zaczynają białe
 
         self.pionki = list()  # lista zawierajaca wszystkie pionki
 
@@ -53,21 +54,31 @@ class Rozgrywka:
         self.renderuj_oznaczenie.update()
         self.renderuj_oznaczenie.draw(self.screen)
 
+    def get_pionek(self, x, y):
+        for foo in self.pionki:
+            if foo.cords == (x, y):
+                return foo
+        debug("nie ma tam pionka!")
+        return False
+
+    def pos_to_cords(self, pos):  # change Surface coords to chess cords
+        return pos[0] / (self.rect.width / 8), 7 - (pos[1] / (self.rect.height / 8))
+
     def click(self, pos):
         debug("[klik]: ", pos)
-
         if self.przenoszenie != -1:  # JEST w trybie przenoszenia
             debug("[klik]: odlozenie!")
             self.screen.blit(self.image, self.przenoszenie.rect, self.przenoszenie.rect)
-            if self.czy_jest_oznaczony(pos[0] / (self.rect.width / 8), 7 - (pos[1] / (self.rect.height / 8))):
-                self.przenoszenie.move(pos[0] / (self.rect.width / 8), 7 - (pos[1] / (self.rect.height / 8)))
+            if self.czy_jest_oznaczony(*self.pos_to_cords(pos)):
+                self.przenoszenie.move(*self.pos_to_cords(pos))
+                self.kolejnosc = not self.kolejnosc
             self.przenoszenie = -1
             self.odznacz()
             self.update()
 
         else:  # NIE jest w trybie przenoszenia
             for pionek in self.pionki:
-                if pionek.rect.collidepoint(pos):  # jesli na klikniętym polu jest klocek
+                if pionek.rect.collidepoint(pos) and self.kolejnosc == pionek.color:
                     debug("[klik]: przenoszenie!")
                     self.przenoszenie = pionek  # przejdz w tryb przenoszenia
                     self.oznacz(*mozliwe_ruchy(pionek.cords, pionek.color, self.slownik_uproszczonych_pionkow))
@@ -85,72 +96,54 @@ class Rozgrywka:
             bar[foo.cords] = foo.color
         return bar
 
+    def zbij(self, pionek):
+        if pionek not in self.pionki:
+            debug("nie zbije tego pionka")
+            return -1
+        else:
+            self.pionki.remove(pionek)
+            self.renderuj_pionki.remove(pionek)
+            self.renderuj_pionki.clear(self.screen, self.image)
+            self.update()
+            debug("ZBIJ")
 
-def czy_jest_na_polu(x, y, pionki):
+
+def jaki_kolo_jest_na_polu(x, y, pionki):
     if x > 7 or y > 7 or x < 0 or y < 0:
         return -1
     for foo in pionki.keys():
         if foo == (x, y):
-            return 1
-    return 0
+            return pionki[foo]
+    return -1
 
 
 def mozliwe_ruchy(cords, color, pionki):
     return_list = list()
     if color == 1:  # jesli pionek jest czarny
-        if czy_jest_na_polu(cords[0]-1, cords[1]+1, pionki) == 0:
+        if jaki_kolo_jest_na_polu(cords[0]-1, cords[1]+1, pionki) == -1:  # zwykly ruch
             return_list.append((cords[0]-1, cords[1]+1))
 
-        if czy_jest_na_polu(cords[0]+1, cords[1]+1, pionki) == 0:
+        if jaki_kolo_jest_na_polu(cords[0]+1, cords[1]+1, pionki) == -1:  # zwykly ruch
             return_list.append((cords[0]+1, cords[1]+1))
+
+        if jaki_kolo_jest_na_polu(cords[0] - 1, cords[1] + 1, pionki) == 0 and jaki_kolo_jest_na_polu(cords[0] - 2, cords[1] + 2, pionki) == -1:
+            # Ruch bicia
+            return_list.append((cords[0] - 2, cords[1] + 2))
+
+        if jaki_kolo_jest_na_polu(cords[0] + 1, cords[1] + 1, pionki) == 0 and jaki_kolo_jest_na_polu(cords[0] + 2, cords[1] + 2, pionki) == -1:
+            # Ruch bicia
+            return_list.append((cords[0] + 2, cords[1] + 2))
     if color == 0:
-        if czy_jest_na_polu(cords[0]-1, cords[1]-1, pionki) == 0:
+        if jaki_kolo_jest_na_polu(cords[0]-1, cords[1]-1, pionki) == -1:  # zwykly ruch
             return_list.append((cords[0]-1, cords[1]-1))
 
-        if czy_jest_na_polu(cords[0]+1, cords[1]-1, pionki) == 0:
+        if jaki_kolo_jest_na_polu(cords[0]+1, cords[1]-1, pionki) == -1:  # zwykly ruch
             return_list.append((cords[0]+1, cords[1]-1))
 
-    return_list.extend(mozliwe_ruchy_bijace(cords, color, pionki, []))
-
-    return filtruj_duplikaty(return_list)
-
-
-def filtruj_duplikaty(arg):
-    se = set(arg)
-    return list(se)
-
-
-def mozliwe_ruchy_bijace(cords, color, arg_pionki, obliczono_dla):  # mozliwe ruchy dla pionka z dana liczba pionkow
-    if cords in obliczono_dla:  # ograniczenie glebokosci rekurencji
-        return []
-    obliczono_dla.append(cords)
-    kopia_pionki = dict(arg_pionki)
-    if kopia_pionki in cords:
-        del kopia_pionki[cords]
-
-    zwracana_lista = list()
-    debug("Mozliwe bicia z:", cords)
-
-    if czy_jest_na_polu(cords[0]-1, cords[1]+1, kopia_pionki) == 1 and czy_jest_na_polu(cords[0]-2, cords[1]+2, kopia_pionki) == 0:
-        # Przeciwnik na lewo do przodu i wolne miejsce za nim: mozna bic!
-        zwracana_lista.append((cords[0]-2, cords[1]+2)) == 1
-        debug("bij lewaka")
-        zwracana_lista.extend(mozliwe_ruchy_bijace((cords[0] - 2, cords[1] + 2), color, arg_pionki, obliczono_dla))
-
-    if czy_jest_na_polu(cords[0]+1, cords[1]+1, kopia_pionki) and czy_jest_na_polu(cords[0]+2, cords[1]+2, kopia_pionki) == 0:
-        # Przeciwnik na prawo do przodu i wolne miejsce za nim: mozna bic!
-        zwracana_lista.append((cords[0]+2, cords[1]+2))
-        debug("bij prawaka")
-        zwracana_lista.extend(mozliwe_ruchy_bijace((cords[0] + 2, cords[1] + 2), color, arg_pionki, obliczono_dla))
-    if czy_jest_na_polu(cords[0]+1, cords[1]-1, kopia_pionki) and czy_jest_na_polu(cords[0]+2, cords[1]-2, kopia_pionki) == 0:
-        # Przeciwnik na prawo do przodu i wolne miejsce za nim: mozna bic!
-        zwracana_lista.append((cords[0]+2, cords[1]-2))
-        debug("bij prawaka")
-        zwracana_lista.extend(mozliwe_ruchy_bijace((cords[0] + 2, cords[1] - 2), color, arg_pionki, obliczono_dla))
-    if czy_jest_na_polu(cords[0]-1, cords[1]-1, kopia_pionki) == 1 and czy_jest_na_polu(cords[0]-2, cords[1]-2, kopia_pionki) == 0:
-        # Przeciwnik na lewo do przodu i wolne miejsce za nim: mozna bic!
-        zwracana_lista.append((cords[0]-2, cords[1]-2)) == 1
-        debug("bij lewaka")
-        zwracana_lista.extend(mozliwe_ruchy_bijace((cords[0] - 2, cords[1] - 2), color, arg_pionki, obliczono_dla))
-
-    return zwracana_lista
+        if jaki_kolo_jest_na_polu(cords[0]+1, cords[1]-1, pionki) == 1 and jaki_kolo_jest_na_polu(cords[0]+2, cords[1]-2, pionki) == -1:
+            # Ruch bicia
+            return_list.append((cords[0]+2, cords[1]-2))
+        if jaki_kolo_jest_na_polu(cords[0]-1, cords[1]-1, pionki) == 1 and jaki_kolo_jest_na_polu(cords[0]-2, cords[1]-2, pionki) == -1:
+            # Ruch bicia
+            return_list.append((cords[0]-2, cords[1]-2))
+    return return_list
