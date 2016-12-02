@@ -2,6 +2,7 @@
 from tools import *
 from pionek import *
 from oznaczenie import *
+from ruchy import *
 import pygame
 
 
@@ -84,6 +85,7 @@ class Rozgrywka:
                 if pionek.rect.collidepoint(pos) and self.kolejnosc == pionek.color:
                     debug("[klik]: przenoszenie!")
                     self.przenoszenie = pionek  # przejdz w tryb przenoszenia
+                    debug(mozliwe_ruchy2(pionek.cords,pionek.color,*self.dwie_listy))
                     self.oznacz(*mozliwe_ruchy(pionek.cords, pionek.color, self.slownik_uproszczonych_pionkow))
 
     def czy_jest_oznaczony(self, x, y):
@@ -112,6 +114,17 @@ class Rozgrywka:
             bar[foo.cords] = foo.color
         return bar
 
+    @property
+    def dwie_listy(self):
+        biale = list()
+        czarne = list()
+        for foo in self.pionki:
+            if foo.color == 0:
+                czarne.append(foo.cords)
+            if foo.color == 1:
+                biale.append(foo.cords)
+        return biale, czarne
+
     def zbij(self, x, y):
         for pionek in self.pionki:
             if pionek.cords == (x, y):
@@ -120,43 +133,3 @@ class Rozgrywka:
                 self.pionki.remove(pionek)
 
 
-
-def jaki_kolo_jest_na_polu(x, y, pionki):
-    if x > 7 or y > 7 or x < 0 or y < 0:
-        return -1
-    for foo in pionki.keys():
-        if foo == (x, y):
-            return pionki[foo]
-    return -1
-
-
-def mozliwe_ruchy(cords, color, pionki):
-    return_list = list()
-    if color == 1:  # jesli pionek jest czarny
-        if jaki_kolo_jest_na_polu(cords[0]-1, cords[1]+1, pionki) == -1:  # zwykly ruch
-            return_list.append((cords[0]-1, cords[1]+1))
-
-        if jaki_kolo_jest_na_polu(cords[0]+1, cords[1]+1, pionki) == -1:  # zwykly ruch
-            return_list.append((cords[0]+1, cords[1]+1))
-
-        if jaki_kolo_jest_na_polu(cords[0] - 1, cords[1] + 1, pionki) == 0 and jaki_kolo_jest_na_polu(cords[0] - 2, cords[1] + 2, pionki) == -1:
-            # Ruch bicia
-            return_list.append((cords[0] - 2, cords[1] + 2))
-
-        if jaki_kolo_jest_na_polu(cords[0] + 1, cords[1] + 1, pionki) == 0 and jaki_kolo_jest_na_polu(cords[0] + 2, cords[1] + 2, pionki) == -1:
-            # Ruch bicia
-            return_list.append((cords[0] + 2, cords[1] + 2))
-    if color == 0:
-        if jaki_kolo_jest_na_polu(cords[0]-1, cords[1]-1, pionki) == -1:  # zwykly ruch
-            return_list.append((cords[0]-1, cords[1]-1))
-
-        if jaki_kolo_jest_na_polu(cords[0]+1, cords[1]-1, pionki) == -1:  # zwykly ruch
-            return_list.append((cords[0]+1, cords[1]-1))
-
-        if jaki_kolo_jest_na_polu(cords[0]+1, cords[1]-1, pionki) == 1 and jaki_kolo_jest_na_polu(cords[0]+2, cords[1]-2, pionki) == -1:
-            # Ruch bicia
-            return_list.append((cords[0]+2, cords[1]-2))
-        if jaki_kolo_jest_na_polu(cords[0]-1, cords[1]-1, pionki) == 1 and jaki_kolo_jest_na_polu(cords[0]-2, cords[1]-2, pionki) == -1:
-            # Ruch bicia
-            return_list.append((cords[0]-2, cords[1]-2))
-    return return_list
