@@ -13,6 +13,7 @@ class Rozgrywka:
         self.image, self.rect = load_png("szachownica.png")
         self.screen.blit(self.image, self.rect)
         self.kolejnosc = 1  # zaczynają białe
+        self.ruchy = dict()
 
         self.pionki = list()  # lista zawierajaca wszystkie pionki
 
@@ -70,13 +71,14 @@ class Rozgrywka:
         if self.przenoszenie != -1:  # JEST w trybie przenoszenia
             debug("[klik]: odlozenie!")
             self.screen.blit(self.image, self.przenoszenie.rect, self.przenoszenie.rect)
-            if self.czy_jest_oznaczony(*self.pos_to_cords(pos)):
-                foo = self.znajdz_bitego(self.przenoszenie.cords, self.pos_to_cords(pos))
+            if (self.pos_to_cords(pos)) in self.ruchy:
+                foo = self.ruchy[self.pos_to_cords(pos)]
                 if foo != 0:
                     self.zbij(*foo)
                 self.przenoszenie.move(*self.pos_to_cords(pos))
                 self.kolejnosc = not self.kolejnosc
             self.przenoszenie = -1
+            self.ruchy = dict()
             self.odznacz()
             self.update()
 
@@ -85,8 +87,8 @@ class Rozgrywka:
                 if pionek.rect.collidepoint(pos) and self.kolejnosc == pionek.color:
                     debug("[klik]: przenoszenie!")
                     self.przenoszenie = pionek  # przejdz w tryb przenoszenia
-                    debug(mozliwe_ruchy2(pionek.cords,pionek.color,*self.dwie_listy))
-                    self.oznacz(*mozliwe_ruchy(pionek.cords, pionek.color, self.slownik_uproszczonych_pionkow))
+                    self.ruchy = mozliwe_ruchy(pionek.cords, pionek.color, *self.dwie_listy)
+                    self.oznacz(*self.ruchy.keys())
 
     def czy_jest_oznaczony(self, x, y):
         for ozn in self.oznaczone:
