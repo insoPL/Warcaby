@@ -29,9 +29,6 @@ class Rozgrywka:
 
         self.renderuj_pionki = pygame.sprite.RenderPlain(self.pionki)  # Uchwyt slużący do renderowania pionków
 
-        self.oznacz((0, 0), (1, 1))
-        self.odznacz()
-
         self.przenoszenie = -1
 
     @property
@@ -90,32 +87,6 @@ class Rozgrywka:
                     self.ruchy = mozliwe_ruchy(pionek.cords, pionek.color, *self.dwie_listy)
                     self.oznacz(*self.ruchy.keys())
 
-    def czy_jest_oznaczony(self, x, y):
-        for ozn in self.oznaczone:
-            if ozn.cords == (x, y):
-                return True
-        return False
-
-    def znajdz_bitego(self, pos1, pos2):
-        if pos1[1]-pos2[1] == -2: # jesli biale
-            if pos1[0]-pos2[0] == 2:
-                return pos1[0]-1, pos1[1]+1
-            elif pos1[0]-pos2[0] == -2:
-                return pos1[0]+1, pos1[1]+1
-        if pos1[1]-pos2[1] == 2: # jesli czarne
-            if pos1[0]-pos2[0] == 2:
-                return pos1[0]-1, pos1[1]-1
-            elif pos1[0]-pos2[0] == -2:
-                return pos1[0]+1, pos1[1]-1
-        return 0
-
-    @property
-    def slownik_uproszczonych_pionkow(self):
-        bar = dict()
-        for foo in self.pionki:
-            bar[foo.cords] = foo.color
-        return bar
-
     @property
     def dwie_listy(self):
         biale = list()
@@ -134,4 +105,17 @@ class Rozgrywka:
                 self.screen.blit(self.image, pionek.rect, pionek.rect)
                 self.pionki.remove(pionek)
 
+    # ################################################### Już nie używane
 
+    def czy_jest_oznaczony(self, x, y):
+        for ozn in self.oznaczone:
+            if ozn.cords == (x, y):
+                return True
+        return False
+
+    @property
+    def slownik_uproszczonych_pionkow(self):
+        bar = dict()
+        for foo in self.pionki:
+            bar[foo.cords] = foo.color
+        return bar

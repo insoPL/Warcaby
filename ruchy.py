@@ -33,10 +33,26 @@ def mozliwe_ruchy(cords, color, biale, czarne):  # zwraca słownik dict[docelowy
     return return_dict
 
 
+# #####################################################################juz nie używane
+
 def jaki_kolor_jest_na_polu(x, y, pionki):
     if x > 7 or y > 7 or x < 0 or y < 0:
         return -1
     for foo in pionki.keys():
         if foo == (x, y):
             return pionki[foo]
-    return -1
+    return
+
+
+def znajdz_bitego(pos1, pos2):
+    if pos1[1] - pos2[1] == -2:  # jesli biale
+        if pos1[0] - pos2[0] == 2:
+            return pos1[0] - 1, pos1[1] + 1
+        elif pos1[0] - pos2[0] == -2:
+            return pos1[0] + 1, pos1[1] + 1
+    if pos1[1] - pos2[1] == 2:  # jesli czarne
+        if pos1[0] - pos2[0] == 2:
+            return pos1[0] - 1, pos1[1] - 1
+        elif pos1[0] - pos2[0] == -2:
+            return pos1[0] + 1, pos1[1] - 1
+    return 0
