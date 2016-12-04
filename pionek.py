@@ -26,8 +26,5 @@ class Pionek(pygame.sprite.Sprite):
     def rect(self):
         return pygame.Rect((self.cords[0]*self.size[0], (7-self.cords[1])*self.size[1]), self.size)
 
-    def getpos(self):
-        return self.cords
-
     def move(self, x, y):
         self.cords = (x, y)

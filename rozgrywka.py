@@ -3,12 +3,14 @@ from tools import *
 from pionek import *
 from oznaczenie import *
 from ruchy import *
+from AI import *
 import pygame
 
 
 class Rozgrywka:
     """klasa reprezentujaca szachownice i calą jej zawartość"""
     def __init__(self, screen):
+        random.seed()
         self.screen = screen
         self.image, self.rect = load_png("szachownica.png")
         self.screen.blit(self.image, self.rect)
@@ -23,6 +25,7 @@ class Rozgrywka:
 
             self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 1), 1))  # biale
             self.pionki.append(Pionek(self.size_of_one_tile, (foo, 0), 1))
+        #elf.pionki.append(Pionek(self.size_of_one_tile, (5, 5), 0))
 
         self.oznaczone = list()
         self.renderuj_oznaczenie = pygame.sprite.RenderPlain(self.oznaczone)
@@ -65,6 +68,7 @@ class Rozgrywka:
 
     def click(self, pos):
         debug("[klik]: ", pos)
+
         if self.przenoszenie != -1:  # JEST w trybie przenoszenia
             debug("[klik]: odlozenie!")
             self.screen.blit(self.image, self.przenoszenie.rect, self.przenoszenie.rect)
@@ -83,6 +87,7 @@ class Rozgrywka:
             for pionek in self.pionki:
                 if pionek.rect.collidepoint(pos) and self.kolejnosc == pionek.color:
                     debug("[klik]: przenoszenie!")
+                    if pionek.color == 0: debug("[AI]: ", ai(*self.dwie_listy))
                     self.przenoszenie = pionek  # przejdz w tryb przenoszenia
                     self.ruchy = mozliwe_ruchy(pionek.cords, pionek.color, *self.dwie_listy)
                     self.oznacz(*self.ruchy.keys())

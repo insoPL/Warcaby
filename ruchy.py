@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from tools import *
 
+
 def mozliwe_ruchy(cords, color, biale, czarne):  # zwraca słownik dict[docelowy_cord] = zbity_pion
     return_dict = dict()
     if color == 1:  # jesli pionek jest bialy
