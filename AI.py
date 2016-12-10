@@ -2,11 +2,8 @@
 from ruchy import *
 import random
 
-# czarne to AI
-
 
 def ai(lista_bialych, lista_czarnych):
-
     mozliwe_ruchy_wszystkich_pionkow = znajdz_wszelkie_mozliwe_ruchy(lista_bialych, lista_czarnych, 0)
     wyniki = list()
     for cordy_pionka, cordy_docelowe, cordy_zbitego in mozliwe_ruchy_wszystkich_pionkow:
@@ -34,7 +31,7 @@ def ai_rek(lista_bialych, lista_czarnych, color,  deep):  # zwraca (skad, dokad,
         return len(lista_czarnych) - len(lista_bialych)
     # lista krotek (cordy_pionka, cordy_docelowe, wynik, cordy_zbitego)
     maxValue = None
-    if color == 0:
+    if color == Color.black:
         for cordy_pionka, cordy_docelowe, cordy_zbitego in mozliwe_ruchy_wszystkich_pionkow:
             nowa_lista_czarnych = move(lista_czarnych, cordy_pionka, cordy_docelowe)
             if cordy_zbitego != 0:
@@ -42,7 +39,7 @@ def ai_rek(lista_bialych, lista_czarnych, color,  deep):  # zwraca (skad, dokad,
             else:
                 nowa_lista_bialych = lista_bialych
             maxValue = max_wynik(maxValue, ai_rek(nowa_lista_bialych, nowa_lista_czarnych, 1, deep))
-    elif color == 1:
+    elif color == Color.white:
         for cordy_pionka, cordy_docelowe, cordy_zbitego in mozliwe_ruchy_wszystkich_pionkow:
             nowa_lista_bialych = move(lista_bialych, cordy_pionka, cordy_docelowe)
             if cordy_zbitego != 0:

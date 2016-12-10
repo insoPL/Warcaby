@@ -4,16 +4,16 @@ import pygame
 
 
 class Pionek(pygame.sprite.Sprite):
-    def __init__(self,  size, cords, color):  # color 0-black 1-white
+    def __init__(self,  size, cords, color):
         pygame.sprite.Sprite.__init__(self)
 
         self.color = color
         self.cords = cords
 
         self.size = size
-        if color == 0:
+        if color == Color.black:
             self.image, rect = load_png("pionek_czarny.png")
-        elif color == 1:
+        elif color == Color.white:
             self.image, rect = load_png("pionek_bialy.png")
         else:
             raise ValueError

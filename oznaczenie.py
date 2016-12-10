@@ -11,7 +11,7 @@ class Oznaczenie(pygame.sprite.Sprite):
 
         self.image, rect = load_png("oznaczenie.png")
 
-        # Skaluj oznaczenie
+        # Skaluj grafike oznaczenia
         self.image = pygame.transform.scale(self.image, size)
 
         self.move(*cords)

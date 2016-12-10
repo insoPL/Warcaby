@@ -47,9 +47,9 @@ def main():
             if event.type == QUIT:
                 return
             if event.type == MOUSEBUTTONDOWN and glowna_rozgrywka.rect.collidepoint(event.pos):
-                glowna_rozgrywka.click(event.pos)
+                glowna_rozgrywka.on_click(event.pos)
             if event.type == MOUSEBUTTONUP and glowna_rozgrywka.rect.collidepoint(event.pos) and glowna_rozgrywka.przenoszenie != -1:
-                glowna_rozgrywka.click(event.pos)
+                glowna_rozgrywka.on_click(event.pos)
         pygame.display.flip()
 
 if __name__ == '__main__':

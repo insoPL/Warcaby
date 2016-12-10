@@ -14,7 +14,7 @@ class Rozgrywka:
         self.screen = screen
         self.image, self.rect = load_png("szachownica.png")
         self.screen.blit(self.image, self.rect)
-        self.kolejnosc = 1  # zaczynają białe
+        self.czyja_kolej = Color.white  # zaczynają białe
         self.ruchy = dict()
 
         self.pionki = list()  # lista zawierajaca wszystkie pionki
@@ -26,12 +26,8 @@ class Rozgrywka:
             self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 1), 1))  # biale
             self.pionki.append(Pionek(self.size_of_one_tile, (foo, 0), 1))
 
-        #self.pionki.append(Pionek(self.size_of_one_tile, (1, 3), 0))
-        #self.pionki.append(Pionek(self.size_of_one_tile, (1, 1), 1))
-
-        debug(ai(*self.dwie_listy))
-
         self.oznaczone = list()
+
         self.renderuj_oznaczenie = pygame.sprite.RenderPlain(self.oznaczone)
 
         self.renderuj_pionki = pygame.sprite.RenderPlain(self.pionki)  # Uchwyt slużący do renderowania pionków
@@ -53,45 +49,47 @@ class Rozgrywka:
         self.renderuj_oznaczenie.update()
         self.renderuj_oznaczenie.draw(self.screen)
 
-    def odznacz(self):
+    def odznacz(self):  # odznacz wszystkie pola
         self.renderuj_oznaczenie.clear(self.screen, self.image)
         self.oznaczone = list()
         self.renderuj_oznaczenie.empty()
         self.renderuj_oznaczenie.update()  # nie potrzebne?
         self.renderuj_oznaczenie.draw(self.screen)
 
-    def get_pionek(self, x, y):
+    def get_pionek(self, x, y):  # --> Pionek
         for foo in self.pionki:
             if foo.cords == (x, y):
                 return foo
         debug("nie ma tam pionka!")
         return False
 
+    def czysc_fragment_ekranu(self, rect):
+        self.screen.blit(self.image, rect, rect)
+
     def pos_to_cords(self, pos):  # change Surface coords to chess cords
         return pos[0] / (self.rect.width / 8), 7 - (pos[1] / (self.rect.height / 8))
 
-    def click(self, pos):
+    def on_click(self, pos):
         debug("[klik]: ", pos)
 
         if self.przenoszenie != -1:  # JEST w trybie przenoszenia
             debug("[klik]: odlozenie!")
-            self.screen.blit(self.image, self.przenoszenie.rect, self.przenoszenie.rect)
+            self.czysc_fragment_ekranu(self.przenoszenie.rect)
             if (self.pos_to_cords(pos)) in self.ruchy:
                 foo = self.ruchy[self.pos_to_cords(pos)]
                 if foo != 0:
-                    self.zbij(*foo)
+                    self.zbij_pionek(*foo)
                 self.przenoszenie.move(*self.pos_to_cords(pos))
-                self.kolejnosc = not self.kolejnosc
-
+                self.czyja_kolej = not self.czyja_kolej
 
                 ruch_ai = ai(*self.dwie_listy)
                 if ruch_ai[2] != 0:
-                    self.zbij(*ruch_ai[2])
+                    self.zbij_pionek(*ruch_ai[2])
                 przenoszony_pionek = self.get_pionek(*ruch_ai[0])
-                self.screen.blit(self.image, przenoszony_pionek.rect, przenoszony_pionek.rect)
+                self.czysc_fragment_ekranu(przenoszony_pionek.rect)
                 przenoszony_pionek.move(*ruch_ai[1])
 
-                self.kolejnosc = not self.kolejnosc
+                self.czyja_kolej = not self.czyja_kolej
 
             self.przenoszenie = -1
             self.ruchy = dict()
@@ -100,7 +98,7 @@ class Rozgrywka:
 
         else:  # NIE jest w trybie przenoszenia
             for pionek in self.pionki:
-                if pionek.rect.collidepoint(pos) and self.kolejnosc == pionek.color:
+                if pionek.rect.collidepoint(pos) and self.czyja_kolej == pionek.color:
                     debug("[klik]: przenoszenie!")
                     self.przenoszenie = pionek  # przejdz w tryb przenoszenia
                     self.ruchy = mozliwe_ruchy(pionek.cords, pionek.color, *self.dwie_listy)
@@ -111,17 +109,17 @@ class Rozgrywka:
         biale = list()
         czarne = list()
         for foo in self.pionki:
-            if foo.color == 0:
+            if foo.color == Color.black:
                 czarne.append(foo.cords)
-            if foo.color == 1:
+            if foo.color == Color.white:
                 biale.append(foo.cords)
         return biale, czarne
 
-    def zbij(self, x, y):
+    def zbij_pionek(self, x, y):
         for pionek in self.pionki:
             if pionek.cords == (x, y):
                 self.renderuj_pionki.remove(pionek)
-                self.screen.blit(self.image, pionek.rect, pionek.rect)
+                self.czysc_fragment_ekranu(pionek.rect)
                 self.pionki.remove(pionek)
 
     # ################################################### Już nie używane

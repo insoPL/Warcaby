@@ -3,6 +3,8 @@ import os
 import pygame
 import random
 import unittest
+from enum21 import Enum
+
 
 def debug(*args):
     for foo in args:
@@ -32,25 +34,6 @@ def filtruj_duplikaty(arg):
     return list(se)
 
 
-def max_value_dict(dic):
-    maxim = 0
-    for value in dic.values():
-        if maxim < value:
-            maxim = value
-    ret_dic = dict()
-    for x,y in dic.keys():
-        if y == maxim:
-            ret_dic[x] = y
-    return ret_dic
-
-
-
-# ####################################nie uzywane
-
-
-def srednia(pos1, pos2):
-    return (pos1[0]+pos2[0])/2, pos1[1]+pos2[1]/2
-
-
-def minus(pos1, pos2):
-    return pos1[0]-pos2[0], pos1[1]-pos2[1]
+class Color(Enum):
+    black = 0
+    white = 1
