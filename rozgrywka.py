@@ -25,7 +25,11 @@ class Rozgrywka:
 
             self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 1), 1))  # biale
             self.pionki.append(Pionek(self.size_of_one_tile, (foo, 0), 1))
-        #elf.pionki.append(Pionek(self.size_of_one_tile, (5, 5), 0))
+
+        #self.pionki.append(Pionek(self.size_of_one_tile, (1, 3), 0))
+        #self.pionki.append(Pionek(self.size_of_one_tile, (1, 1), 1))
+
+        debug(ai(*self.dwie_listy))
 
         self.oznaczone = list()
         self.renderuj_oznaczenie = pygame.sprite.RenderPlain(self.oznaczone)
@@ -78,6 +82,17 @@ class Rozgrywka:
                     self.zbij(*foo)
                 self.przenoszenie.move(*self.pos_to_cords(pos))
                 self.kolejnosc = not self.kolejnosc
+
+
+                ruch_ai = ai(*self.dwie_listy)
+                if ruch_ai[2] != 0:
+                    self.zbij(*ruch_ai[2])
+                przenoszony_pionek = self.get_pionek(*ruch_ai[0])
+                self.screen.blit(self.image, przenoszony_pionek.rect, przenoszony_pionek.rect)
+                przenoszony_pionek.move(*ruch_ai[1])
+
+                self.kolejnosc = not self.kolejnosc
+
             self.przenoszenie = -1
             self.ruchy = dict()
             self.odznacz()
@@ -87,7 +102,6 @@ class Rozgrywka:
             for pionek in self.pionki:
                 if pionek.rect.collidepoint(pos) and self.kolejnosc == pionek.color:
                     debug("[klik]: przenoszenie!")
-                    if pionek.color == 0: debug("[AI]: ", ai(*self.dwie_listy))
                     self.przenoszenie = pionek  # przejdz w tryb przenoszenia
                     self.ruchy = mozliwe_ruchy(pionek.cords, pionek.color, *self.dwie_listy)
                     self.oznacz(*self.ruchy.keys())
