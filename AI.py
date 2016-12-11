@@ -16,7 +16,7 @@ def ai(lista_bialych, lista_czarnych):
         wynik = ai_rek(nowa_lista_bialych, nowa_lista_czarnych, 1, deep)
 
         wyniki.append((cordy_pionka, cordy_docelowe, wynik, cordy_zbitego))
-        debug("wynik dla",cordy_pionka, "->",cordy_docelowe, wynik)
+        debug("wynik dla", cordy_pionka, "->", cordy_docelowe,": ", wynik)
     return random_max_ruch(wyniki)
 
 
@@ -30,7 +30,7 @@ def ai_rek(lista_bialych, lista_czarnych, color,  deep):  # zwraca (skad, dokad,
     if len(mozliwe_ruchy_wszystkich_pionkow) == 0:
         return len(lista_czarnych) - len(lista_bialych)
     # lista krotek (cordy_pionka, cordy_docelowe, wynik, cordy_zbitego)
-    maxValue = None
+    min_max_value = None
     if color == Color.black:
         for cordy_pionka, cordy_docelowe, cordy_zbitego in mozliwe_ruchy_wszystkich_pionkow:
             nowa_lista_czarnych = move(lista_czarnych, cordy_pionka, cordy_docelowe)
@@ -38,7 +38,7 @@ def ai_rek(lista_bialych, lista_czarnych, color,  deep):  # zwraca (skad, dokad,
                 nowa_lista_bialych = usun_pionek(lista_bialych, cordy_zbitego)
             else:
                 nowa_lista_bialych = lista_bialych
-            maxValue = max_wynik(maxValue, ai_rek(nowa_lista_bialych, nowa_lista_czarnych, 1, deep))
+            min_max_value = max_wynik(min_max_value, ai_rek(nowa_lista_bialych, nowa_lista_czarnych, 1, deep))
     elif color == Color.white:
         for cordy_pionka, cordy_docelowe, cordy_zbitego in mozliwe_ruchy_wszystkich_pionkow:
             nowa_lista_bialych = move(lista_bialych, cordy_pionka, cordy_docelowe)
@@ -47,26 +47,26 @@ def ai_rek(lista_bialych, lista_czarnych, color,  deep):  # zwraca (skad, dokad,
             else:
                 nowa_lista_czarnych = lista_czarnych
             mini =ai_rek(nowa_lista_bialych, nowa_lista_czarnych, 0, deep)
-            maxValue = min_wynik(maxValue, mini)
-    return maxValue
+            min_max_value = min_wynik(min_max_value, mini)
+    return min_max_value
 
 
-def max_wynik(bestValue, thisValue):
-    if bestValue == None:
-        return thisValue
-    elif bestValue < thisValue:
-        return thisValue
+def max_wynik(best_value, this_value):
+    if best_value is None:
+        return this_value
+    elif best_value < this_value:
+        return this_value
     else:
-        return bestValue
+        return best_value
 
 
-def min_wynik(bestValue, thisValue):
-    if bestValue == None:
-        return thisValue
-    elif bestValue > thisValue:
-        return thisValue
+def min_wynik(best_value, this_value):
+    if best_value is None:
+        return this_value
+    elif best_value > this_value:
+        return this_value
     else:
-        return bestValue
+        return best_value
 
 
 def move(lista, cordy_pionka, cordy_docelowe):

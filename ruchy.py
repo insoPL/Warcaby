@@ -27,7 +27,7 @@ def mozliwe_ruchy(cords, color, biale, czarne):  # zwraca słownik dict[docelowy
             if cords[0]-1 >= 0 and cords[1]-1 >= 0:
                 return_dict[(cords[0]-1, cords[1]-1)] = 0
 
-        if (cords[0]+1, cords[1]-1) not in czarne + biale:  # zwykly ruch7
+        if (cords[0]+1, cords[1]-1) not in czarne + biale:  # zwykly ruch
             if cords[0]+1 <= 7 and cords[1]-1 >= 0:
                 return_dict[(cords[0]+1, cords[1]-1)] = 0
 
@@ -40,14 +40,3 @@ def mozliwe_ruchy(cords, color, biale, czarne):  # zwraca słownik dict[docelowy
             if cords[0]-2 >= 0 and cords[1]-2 >= 0:
                 return_dict[(cords[0]-2, cords[1]-2)] = (cords[0]-1, cords[1]-1)
     return return_dict
-
-
-# #####################################################################dead code
-
-def jaki_kolor_jest_na_polu(x, y, pionki):
-    if x > 7 or y > 7 or x < 0 or y < 0:
-        return -1
-    for foo in pionki.keys():
-        if foo == (x, y):
-            return pionki[foo]
-    return
