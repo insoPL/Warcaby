@@ -16,6 +16,7 @@ class Rozgrywka:
         self.screen.blit(self.image, self.rect)
         self.czyja_kolej = Color.white  # zaczynają białe
         self.ruchy = dict()
+        self.tryb_jenego_gracza = True
 
         self.pionki = list()  # lista zawierajaca wszystkie pionki
 
@@ -80,16 +81,18 @@ class Rozgrywka:
                 if foo != 0:
                     self.zbij_pionek(*foo)
                 self.przenoszenie.move(*self.pos_to_cords(pos))
-                self.czyja_kolej = not self.czyja_kolej
-
-                ruch_ai = ai(*self.dwie_listy)
-                if ruch_ai[2] != 0:
-                    self.zbij_pionek(*ruch_ai[2])
-                przenoszony_pionek = self.get_pionek(*ruch_ai[0])
-                self.czysc_fragment_ekranu(przenoszony_pionek.rect)
-                przenoszony_pionek.move(*ruch_ai[1])
 
                 self.czyja_kolej = not self.czyja_kolej
+                if self.tryb_jenego_gracza:
+                    ruch_ai = ai(*self.dwie_listy)
+                    if ruch_ai is not None:
+                        if ruch_ai[2] != 0:
+                            self.zbij_pionek(*ruch_ai[2])
+                        przenoszony_pionek = self.get_pionek(*ruch_ai[0])
+                        self.czysc_fragment_ekranu(przenoszony_pionek.rect)
+                        przenoszony_pionek.move(*ruch_ai[1])
+
+                    self.czyja_kolej = not self.czyja_kolej
 
             self.przenoszenie = -1
             self.ruchy = dict()
