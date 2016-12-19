@@ -32,8 +32,3 @@ def load_png(name):  # --> Surface, Rect
 def filtruj_duplikaty(arg):
     se = set(arg)
     return list(se)
-
-
-class Color(Enum):
-    black = 0
-    white = 1
