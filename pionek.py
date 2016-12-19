@@ -28,8 +28,3 @@ class Pionek(pygame.sprite.Sprite):
 
     def move(self, x, y):
         self.cords = (x, y)
-
-
-class Color(Enum):
-    black = 0
-    white = 1
