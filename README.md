@@ -1,4 +1,6 @@
 #Warcaby
+![Screen](https://www.dropbox.com/s/0hzqe72gg7ifbob/Warcaby.PNG?raw=1)
+
 ##1. Ogólny opis programu.
 Program jest komputerową adaptacją popularnej gry planszowej "Warcaby" [[Wikipedia](https://pl.wikipedia.org/wiki/Warcaby#Zasady_gry)] w języku python. 
 Program implementuje sztuczną inteligencje korzystając z algorytmu minmax oraz używa modułu pygame w celu obsługi grafiki oraz urządzeń wejścia.
