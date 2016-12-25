@@ -23,7 +23,9 @@ class Rozgrywka:
         for foo in range(0, 8, 2):  # dodaj pionki
             self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 7), Color.black))  # czarne - dol ekranu
             self.pionki.append(Pionek(self.size_of_one_tile, (foo, 6), Color.black))
+            self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 5), Color.black))
 
+            self.pionki.append(Pionek(self.size_of_one_tile, (foo, 2), Color.white))
             self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 1), Color.white))  # biale
             self.pionki.append(Pionek(self.size_of_one_tile, (foo, 0), Color.white))
 
@@ -90,6 +92,7 @@ class Rozgrywka:
 
                 self.czysc_fragment_ekranu(self.przesowany_pionek.rect)  # wyczyszczenie ekranu pod starym pionkiem
                 self.przesowany_pionek.move(*self.pos_to_cords(pos))  # przeniesienie pionka na nowe pole
+
                 self.czyja_kolej = not self.czyja_kolej  # koniec ruchu
 
                 if self.tryb_jenego_gracza:
