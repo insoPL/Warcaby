@@ -16,7 +16,7 @@ def debug(*args):
 
 
 def load_png(name):  # --> Surface, Rect
-    fullname = os.path.join('data', name)
+    fullname = os.path.join('images', name)
     try:
         image = pygame.image.load(fullname)
         if image.get_alpha is None:

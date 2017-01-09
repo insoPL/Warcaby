@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-from tools import *
 from pionek import *
 from oznaczenie import *
-from ruchy import *
 from AI import *
 import pygame
 

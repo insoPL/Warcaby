@@ -4,7 +4,7 @@ try:
     from socket import *
     from pygame.locals import *
     from tools import *
-    from rozgrywka import *
+    from rozgrywka.rozgrywka import *
 except ImportError, err:
     print "couldn't load module. %s" % (err)
     sys.exit(2)

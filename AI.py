@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from ruchy import *
 import random
+
+from rozgrywka.ruchy import *
 
 
 def ai(lista_bialych, lista_czarnych):
