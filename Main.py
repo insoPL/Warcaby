@@ -1,13 +1,7 @@
 # -*- coding: utf-8 -*-
-
-try:
-    from socket import *
-    from pygame.locals import *
-    from tools import *
-    from rozgrywka.rozgrywka import *
-except ImportError, err:
-    print "couldn't load module. %s" % (err)
-    sys.exit(2)
+from pygame.locals import *
+from tools import *
+from glowna_klasa_rozgrywki.rozgrywka import *
 
 
 def main():

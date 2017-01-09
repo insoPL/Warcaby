@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
-from pionek import *
-from oznaczenie import *
-from AI import *
+
+from pionek import Pionek
+from oznaczenie import Oznaczenie
+from AI import ai
+from ruchy import mozliwe_ruchy
+from tools import *
+import random
 import pygame
 
 

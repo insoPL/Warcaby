@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import pygame
-import random
-import unittest
+
 from enum21 import Enum
 
 
