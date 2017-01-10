@@ -41,7 +41,8 @@ def _ai_rek(lista_przeciwnika, lista_gracza, kolor, deep):  # zwraca (skad, doka
                 nowa_lista_bialych = usun_pionek_z_listy(lista_przeciwnika, cordy_zbitego)
             else:
                 nowa_lista_bialych = lista_przeciwnika
-            min_max_value = max_wynik(min_max_value, _ai_rek(nowa_lista_bialych, nowa_lista_czarnych, Kolor.bialy, deep))
+            wynik_rekurencji = _ai_rek(nowa_lista_bialych, nowa_lista_czarnych, Kolor.bialy, deep)
+            min_max_value = max_wynik(min_max_value, wynik_rekurencji)
     elif kolor == Kolor.bialy:
         for cordy_pionka, cordy_docelowe, cordy_zbitego in mozliwe_ruchy_wszystkich_pionkow:
             nowa_lista_bialych = przesun_pionek_na_liscie(lista_przeciwnika, cordy_pionka, cordy_docelowe)
@@ -49,8 +50,8 @@ def _ai_rek(lista_przeciwnika, lista_gracza, kolor, deep):  # zwraca (skad, doka
                 nowa_lista_czarnych = usun_pionek_z_listy(lista_gracza, cordy_zbitego)
             else:
                 nowa_lista_czarnych = lista_gracza
-            mini = _ai_rek(nowa_lista_bialych, nowa_lista_czarnych, Kolor.czarny, deep)
-            min_max_value = min_wynik(min_max_value, mini)
+            wynik_rekurencji = _ai_rek(nowa_lista_bialych, nowa_lista_czarnych, Kolor.czarny, deep)
+            min_max_value = min_wynik(min_max_value, wynik_rekurencji)
     return min_max_value
 
 
@@ -83,4 +84,4 @@ def random_max_ruch(mozliwe_ruchy_wszystkich_pionkow):
     if len(ret_list) != 0:
         return random.choice(ret_list)
     else:
-        return list()
+        return None

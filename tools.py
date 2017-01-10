@@ -33,9 +33,26 @@ def filtruj_duplikaty(arg):
     return list(se)
 
 
+class BrakMozliwegoRuchu(Exception):
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        return "Brak mozliwego ruchu. Koniec gry!"
+
+
 class Kolor(Enum):
     czarny = 0
     bialy = 1
+
+    @staticmethod
+    def to_str(kolor):
+        if kolor == Kolor.bialy:
+            return "bialy"
+        elif kolor == Kolor.czarny:
+            return "czarny"
+        else:
+            raise ValueError("Nie wlasciwy Kolor: " + str(kolor))
 
     @staticmethod
     def przeciwny(kolor):

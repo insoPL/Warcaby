@@ -1,20 +1,28 @@
 # -*- coding: utf-8 -*-
 
-from pionek import *
-from oznaczenie import Oznaczenie
+from Pionek import *
+from Oznaczenie import Oznaczenie
 from AI import ai
 from ruchy import mozliwe_ruchy
 import random
 import pygame
 
 
-class Rozgrywka:
-    """klasa reprezentujaca szachownice i calą jej zawartość"""
+class Szachownica:
     def __init__(self, screen):
-        random.seed()
         self.screen = screen
         self.image, self.rect = load_png("szachownica.png")
         self.screen.blit(self.image, self.rect)
+
+    @property
+    def size_of_one_tile(self):
+        return self.rect.width/8, self.rect.height/8
+
+
+class Rozgrywka(Szachownica):
+    """klasa reprezentujaca szachownice i calą jej zawartość"""
+    def __init__(self, screen):
+        Szachownica.__init__(self, screen)
         self.czyja_kolej = Kolor.bialy  # zaczynają białe
         self._ruchy = dict()  # przechowuje dane o mozliwych ruchach
         self.tryb_jenego_gracza = True
@@ -38,22 +46,18 @@ class Rozgrywka:
 
         self.przesowany_pionek = -1
 
-    @property
-    def size_of_one_tile(self):
-        return self.rect.width/8, self.rect.height/8
-
     def update(self):
         self.renderuj_pionki.update()
         self.renderuj_pionki.draw(self.screen)
 
-    def oznacz(self, *cords):  # cords - lista krotek (x, y)
+    def oznacz_pole(self, *cords):  # cords - lista krotek (x, y)
         for cord in cords:
             self._oznaczone.append(Oznaczenie(self.size_of_one_tile, cord))
         self._renderuj_oznaczenie.add(self._oznaczone)
         self._renderuj_oznaczenie.update()
         self._renderuj_oznaczenie.draw(self.screen)
 
-    def odznacz(self):  # odznacz wszystkie pola
+    def odznacz_wszystkie_pola(self):
         self._renderuj_oznaczenie.clear(self.screen, self.image)
         self._oznaczone = list()
         self._renderuj_oznaczenie.empty()
@@ -82,7 +86,7 @@ class Rozgrywka:
                 debug("[on_click]: przenoszenie!")
                 self.przesowany_pionek = pionek  # przejdz w tryb przenoszenia
                 self._ruchy = mozliwe_ruchy(pionek.cords, pionek.color, *self.dwie_listy)
-                self.oznacz(*self._ruchy.keys())
+                self.oznacz_pole(*self._ruchy.keys())
 
         else:  # JEST w trybie podniesionego pionka
             debug("[on_click]: odlozenie!")
@@ -101,17 +105,19 @@ class Rozgrywka:
 
             self.przesowany_pionek = -1
             self._ruchy = dict()
-            self.odznacz()
+            self.odznacz_wszystkie_pola()
             self.update()
 
     def ruch_ai(self):
-        ruch_ai = ai(*self.dwie_listy)
-        if ruch_ai is not None:
-            if ruch_ai[2] != 0:
-                self.zbij_pionek(*ruch_ai[2])
-            przenoszony_pionek = self.get_pionek(*ruch_ai[0])
-            self.czysc_fragment_ekranu(przenoszony_pionek.rect)
-            przenoszony_pionek.move(*ruch_ai[1])
+        try:
+            cordy_pionka, cordy_docelowe, zbite_pole = ai(*self.dwie_listy)
+        except BrakMozliwegoRuchu:
+            raise BrakMozliwegoRuchu
+        if zbite_pole != 0:
+            self.zbij_pionek(*zbite_pole)
+        przenoszony_pionek = self.get_pionek(*cordy_pionka)
+        self.czysc_fragment_ekranu(przenoszony_pionek.rect)
+        przenoszony_pionek.move(*cordy_docelowe)
         self.czyja_kolej = not self.czyja_kolej
 
     @property
