@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pygame.locals import *
 from tools import *
-from glowna_klasa_rozgrywki.rozgrywka import *
+from rozgrywka import Rozgrywka
 
 
 def main():

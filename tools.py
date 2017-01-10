@@ -24,7 +24,7 @@ def load_png(name):  # --> Surface, Rect
             image = image.convert_alpha()
     except pygame.error, message:
         print 'Nie mozna wczytac:', fullname
-        raise SystemExit, message
+        raise SystemExit(message)
     return image, image.get_rect()
 
 
