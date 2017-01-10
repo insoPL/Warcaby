@@ -11,9 +11,9 @@ class Pionek(pygame.sprite.Sprite):
         self.cords = cords
 
         self.size = size
-        if color == Color.black:
+        if color == Kolor.czarny:
             self.image, rect = load_png("pionek_czarny.png")
-        elif color == Color.white:
+        elif color == Kolor.bialy:
             self.image, rect = load_png("pionek_bialy.png")
         else:
             raise ValueError

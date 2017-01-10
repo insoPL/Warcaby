@@ -15,20 +15,20 @@ class Rozgrywka:
         self.screen = screen
         self.image, self.rect = load_png("szachownica.png")
         self.screen.blit(self.image, self.rect)
-        self.czyja_kolej = Color.white  # zaczynają białe
+        self.czyja_kolej = Kolor.bialy  # zaczynają białe
         self._ruchy = dict()  # przechowuje dane o mozliwych ruchach
         self.tryb_jenego_gracza = True
 
         self.pionki = list()  # lista zawierajaca wszystkie pionki
 
         for foo in range(0, 8, 2):  # dodaj pionki
-            self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 7), Color.black))  # czarne - dol ekranu
-            self.pionki.append(Pionek(self.size_of_one_tile, (foo, 6), Color.black))
-            self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 5), Color.black))
+            self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 7), Kolor.czarny))  # czarne - dol ekranu
+            self.pionki.append(Pionek(self.size_of_one_tile, (foo, 6), Kolor.czarny))
+            self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 5), Kolor.czarny))
 
-            self.pionki.append(Pionek(self.size_of_one_tile, (foo, 2), Color.white))
-            self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 1), Color.white))  # biale
-            self.pionki.append(Pionek(self.size_of_one_tile, (foo, 0), Color.white))
+            self.pionki.append(Pionek(self.size_of_one_tile, (foo, 2), Kolor.bialy))
+            self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 1), Kolor.bialy))  # biale
+            self.pionki.append(Pionek(self.size_of_one_tile, (foo, 0), Kolor.bialy))
 
         self._oznaczone = list()
 
@@ -119,9 +119,9 @@ class Rozgrywka:
         biale = list()
         czarne = list()
         for foo in self.pionki:
-            if foo.color == Color.black:
+            if foo.color == Kolor.czarny:
                 czarne.append(foo.cords)
-            if foo.color == Color.white:
+            if foo.color == Kolor.bialy:
                 biale.append(foo.cords)
         return biale, czarne
 

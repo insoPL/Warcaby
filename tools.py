@@ -33,6 +33,6 @@ def filtruj_duplikaty(arg):
     return list(se)
 
 
-class Color(Enum):
-    black = 0
-    white = 1
+class Kolor(Enum):
+    czarny = 0
+    bialy = 1
