@@ -36,3 +36,12 @@ def filtruj_duplikaty(arg):
 class Kolor(Enum):
     czarny = 0
     bialy = 1
+
+    @staticmethod
+    def przeciwny(kolor):
+        if kolor == Kolor.bialy:
+            return Kolor.czarny
+        elif kolor == Kolor.czarny:
+            return Kolor.bialy
+        else:
+            raise ValueError("Nie wlasciwy Kolor: " + str(kolor))

@@ -31,4 +31,3 @@ def usun_pionek_z_listy(lista, cordy_zbitego):
         if pionek != cordy_zbitego:
             ret_list.append(pionek)
     return ret_list
-
