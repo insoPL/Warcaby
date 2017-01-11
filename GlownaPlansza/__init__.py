@@ -8,23 +8,25 @@ from Szachownica import Szachownica
 from tools import *
 
 
-class Rozgrywka(Szachownica):
+class GlownaPlansza(Szachownica):
     """klasa reprezentujaca szachownice i calą jej zawartość"""
     def __init__(self, screen):
         Szachownica.__init__(self, screen)
         self.czyja_kolej = Kolor.bialy  # zaczynają białe
         self._ruchy = dict()  # przechowuje dane o mozliwych ruchach
         self.tryb_jenego_gracza = True
-        self.przesowany_pionek = -1
+        self.przesowany_pionek = None
+        self.tryb_przenoszenia = False
 
     def on_click(self, pos):
         debug("[on_click]: ", pos)
 
-        if self.przesowany_pionek == -1:  # NIE jest w trybie podniesionego pionka
+        if not self.tryb_przenoszenia:  # NIE jest w trybie podniesionego pionka
             pionek = self.get_pionek(*self.pos_to_cords(pos))
-            if pionek != 0 and self.czyja_kolej == pionek.color:
+            if pionek != 0 and pionek.color == self.czyja_kolej:
                 debug("[on_click]: przenoszenie!")
                 self.przesowany_pionek = pionek  # przejdz w tryb przenoszenia
+                self.tryb_przenoszenia = True
                 self._ruchy = mozliwe_ruchy(pionek.cords, pionek.color, *self.dwie_listy)
                 self.oznacz_pole(*self._ruchy.keys())
 
@@ -43,7 +45,7 @@ class Rozgrywka(Szachownica):
                 if self.tryb_jenego_gracza:
                     self.ruch_ai()
 
-            self.przesowany_pionek = -1
+            self.tryb_przenoszenia = False
             self._ruchy = dict()
             self.odznacz_wszystkie_pola()
             self.update()

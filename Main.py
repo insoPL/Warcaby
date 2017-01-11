@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pygame.locals import *
 from tools import *
-from rozgrywka import Rozgrywka
+from GlownaPlansza import GlownaPlansza
 
 
 def main():
@@ -21,7 +21,7 @@ def main():
 
     # Inicalizuj szachownice
 
-    glowna_rozgrywka = Rozgrywka(screen)
+    glowna_rozgrywka = GlownaPlansza(screen)
 
     # renderuj zawartosc szachownicy
     glowna_rozgrywka.update()
