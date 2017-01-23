@@ -13,19 +13,26 @@ class Szachownica:
         self.pionki = list()  # lista zawierajaca wszystkie pionki
 
         for foo in range(0, 8, 2):  # dodaj pionki
-            self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 7), Kolor.czarny))  # czarne - dol ekranu
-            self.pionki.append(Pionek(self.size_of_one_tile, (foo, 6), Kolor.czarny))
-            self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 5), Kolor.czarny))
+            self.dodaj_pionek(foo+1, 7, Kolor.czarny)  # czarne - dol ekranu
+            self.dodaj_pionek(foo, 6, Kolor.czarny)
+            self.dodaj_pionek(foo+1, 5, Kolor.czarny)
 
-            self.pionki.append(Pionek(self.size_of_one_tile, (foo, 2), Kolor.bialy))
-            self.pionki.append(Pionek(self.size_of_one_tile, (foo+1, 1), Kolor.bialy))  # biale
-            self.pionki.append(Pionek(self.size_of_one_tile, (foo, 0), Kolor.bialy))
+            self.dodaj_pionek(foo, 2, Kolor.bialy)
+            self.dodaj_pionek(foo+1, 1, Kolor.bialy)  # biale
+            self.dodaj_pionek(foo, 0, Kolor.bialy)
 
         self.renderuj_pionki = pygame.sprite.RenderPlain(self.pionki)  # Uchwyt slużący do renderowania pionków
 
         self._oznaczone = list()
 
         self._renderuj_oznaczenie = pygame.sprite.RenderPlain(self._oznaczone)
+
+    def dodaj_pionek(self, x, y, kolor):
+        self.pionki.append(Pionek(self.size_of_one_tile, (x, y), kolor))
+
+    def przesun_pionek(self, przesowany_pionek, cordy_docelowe):
+        self.czysc_fragment_ekranu(przesowany_pionek.rect)  # wyczyszczenie ekranu pod starym pionkiem
+        przesowany_pionek.move(*cordy_docelowe)  # przeniesienie pionka na nowe pole
 
     @property
     def size_of_one_tile(self):

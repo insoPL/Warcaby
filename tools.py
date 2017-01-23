@@ -41,6 +41,18 @@ class BrakMozliwegoRuchu(Exception):
         return "Brak mozliwego ruchu. Koniec gry!"
 
 
+class PodniesieniePionka(Exception):
+    def __init__(self, kolor):
+        self.kolor = kolor
+
+    def __str__(self):
+        return "Podniesiono " + str(self.kolor)
+
+
+class OpuszczeniePionka(Exception):
+    pass
+
+
 class Kolor(Enum):
     czarny = 0
     bialy = 1

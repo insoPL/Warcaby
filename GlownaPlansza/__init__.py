@@ -26,9 +26,11 @@ class GlownaPlansza(Szachownica):
             if pionek != 0 and pionek.color == self.czyja_kolej:
                 debug("[on_click]: przenoszenie!")
                 self.przesowany_pionek = pionek  # przejdz w tryb przenoszenia
+                self.zbij_pionek(*self.pos_to_cords(pos))
                 self.tryb_przenoszenia = True
                 self._ruchy = mozliwe_ruchy(pionek.cords, pionek.color, *self.dwie_listy)
                 self.oznacz_pole(*self._ruchy.keys())
+                raise PodniesieniePionka(pionek.color)
 
         else:  # JEST w trybie podniesionego pionka
             debug("[on_click]: odlozenie!")
@@ -37,18 +39,20 @@ class GlownaPlansza(Szachownica):
                 if zbity_pionek != 0:
                     self.zbij_pionek(*zbity_pionek)
 
-                self.czysc_fragment_ekranu(self.przesowany_pionek.rect)  # wyczyszczenie ekranu pod starym pionkiem
-                self.przesowany_pionek.move(*self.pos_to_cords(pos))  # przeniesienie pionka na nowe pole
+                self.przesun_pionek(self.przesowany_pionek, self.pos_to_cords(pos))
+                self.pionki.append(self.przesowany_pionek)
+                self.update()
 
                 self.czyja_kolej = not self.czyja_kolej  # koniec ruchu
 
                 if self.tryb_jenego_gracza:
                     self.ruch_ai()
 
-            self.tryb_przenoszenia = False
             self._ruchy = dict()
             self.odznacz_wszystkie_pola()
             self.update()
+            self.tryb_przenoszenia = False
+            raise OpuszczeniePionka
 
     def ruch_ai(self):
         try:
