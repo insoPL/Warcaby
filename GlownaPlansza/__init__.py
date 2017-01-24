@@ -22,11 +22,11 @@ class GlownaPlansza(Szachownica):
         debug("[on_click]: ", pos)
 
         if not self.tryb_przenoszenia:  # NIE jest w trybie podniesionego pionka
-            pionek = self.get_pionek(*self.pos_to_cords(pos))
+            pionek = self.get_pionek(self.pos_to_cords(pos))
             if pionek != 0 and pionek.color == self.czyja_kolej:
                 debug("[on_click]: przenoszenie!")
                 self.przesowany_pionek = pionek  # przejdz w tryb przenoszenia
-                self.zbij_pionek(*self.pos_to_cords(pos))
+                self.zbij_pionek(self.pos_to_cords(pos))
                 self.tryb_przenoszenia = True
                 self._ruchy = mozliwe_ruchy(pionek.cords, pionek.color, *self.dwie_listy)
                 self.oznacz_pole(*self._ruchy.keys())
@@ -60,8 +60,8 @@ class GlownaPlansza(Szachownica):
         except BrakMozliwegoRuchu:
             raise BrakMozliwegoRuchu
         if zbite_pole != 0:
-            self.zbij_pionek(*zbite_pole)
-        przenoszony_pionek = self.get_pionek(*cordy_pionka)
+            self.zbij_pionek(zbite_pole)
+        przenoszony_pionek = self.get_pionek(cordy_pionka)
         self.czysc_fragment_ekranu(przenoszony_pionek.rect)
         przenoszony_pionek.move(*cordy_docelowe)
         self.czyja_kolej = not self.czyja_kolej

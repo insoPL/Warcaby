@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from Pionek import Pionek
 from tools import *
 from Oznaczenie import Oznaczenie
+from PionkiNaSzachownicy import PionkiNaSzachownicy
 
 
 class Szachownica:
@@ -12,42 +12,33 @@ class Szachownica:
 
         self.pionki = list()  # lista zawierajaca wszystkie pionki
 
-        for foo in range(0, 8, 2):  # dodaj pionki
-            self.dodaj_pionek(foo+1, 7, Kolor.czarny)  # czarne - dol ekranu
-            self.dodaj_pionek(foo, 6, Kolor.czarny)
-            self.dodaj_pionek(foo+1, 5, Kolor.czarny)
-
-            self.dodaj_pionek(foo, 2, Kolor.bialy)
-            self.dodaj_pionek(foo+1, 1, Kolor.bialy)  # biale
-            self.dodaj_pionek(foo, 0, Kolor.bialy)
-
-        self.renderuj_pionki = pygame.sprite.RenderPlain(self.pionki)  # Uchwyt slużący do renderowania pionków
+        self.pionkiNaSzachownicy = PionkiNaSzachownicy(self.size_of_one_tile)
 
         self._oznaczone = list()
 
         self._renderuj_oznaczenie = pygame.sprite.RenderPlain(self._oznaczone)
 
-    def dodaj_pionek(self, x, y, kolor):
-        self.pionki.append(Pionek(self.size_of_one_tile, (x, y), kolor))
-
     def przesun_pionek(self, przesowany_pionek, cordy_docelowe):
         self.czysc_fragment_ekranu(przesowany_pionek.rect)  # wyczyszczenie ekranu pod starym pionkiem
         przesowany_pionek.move(*cordy_docelowe)  # przeniesienie pionka na nowe pole
+
+    def dodaj_pionek(self, cords, kolor):
+        self.pionkiNaSzachownicy.dodaj_pionek(self.size_of_one_tile, cords, kolor)
+
+    def get_pionek(self, cords):
+        return self.pionkiNaSzachownicy.get_pionek(cords)
 
     @property
     def size_of_one_tile(self):
         return self.rect.width/8, self.rect.height/8
 
-    def update(self):
-        self.renderuj_pionki.update()
-        self.renderuj_pionki.draw(self.screen)
+    @property
+    def dwie_listy(self):
+        return self.pionkiNaSzachownicy.dwie_listy
 
-    def get_pionek(self, x, y):  # --> Pionek
-        for foo in self.pionki:
-            if foo.cords == (x, y):
-                return foo
-        debug("nie ma tam pionka!")
-        return False
+    def update(self):
+        self.pionkiNaSzachownicy.update()
+        self.pionkiNaSzachownicy.draw(self.screen)
 
     def czysc_fragment_ekranu(self, rect):
         self.screen.blit(self.image, rect, rect)
@@ -55,22 +46,10 @@ class Szachownica:
     def pos_to_cords(self, pos):  # change Surface coords to chess cords
         return pos[0] / (self.rect.width / 8), 7 - (pos[1] / (self.rect.height / 8))
 
-    @property
-    def dwie_listy(self):
-        biale = list()
-        czarne = list()
-        for foo in self.pionki:
-            if foo.color == Kolor.czarny:
-                czarne.append(foo.cords)
-            if foo.color == Kolor.bialy:
-                biale.append(foo.cords)
-        return biale, czarne
-
-    def zbij_pionek(self, x, y):
-        pionek = self.get_pionek(x, y)
-        self.renderuj_pionki.remove(pionek)
+    def zbij_pionek(self, cords):
+        pionek = self.pionkiNaSzachownicy.get_pionek(cords)
+        self.pionkiNaSzachownicy.usun_pionek(cords)
         self.czysc_fragment_ekranu(pionek.rect)
-        self.pionki.remove(pionek)
 
     def oznacz_pole(self, *cords):  # cords - lista krotek (x, y)
         for cord in cords:
