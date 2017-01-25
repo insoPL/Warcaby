@@ -2,8 +2,6 @@
 import os
 import pygame
 
-from enum21 import Enum
-
 
 def debug(*args):
     for foo in args:
@@ -53,7 +51,7 @@ class OpuszczeniePionka(Exception):
     pass
 
 
-class Kolor(Enum):
+class Kolor:
     czarny = 0
     bialy = 1
 
