@@ -20,39 +20,44 @@ class GlownaPlansza(Szachownica):
 
     def on_click(self, pos):
         debug("[on_click]: ", pos)
+        cordy_kliknietego_pola = self.pos_to_cords(pos)
 
         if not self.tryb_przenoszenia:  # NIE jest w trybie podniesionego pionka
-            pionek = self.get_pionek(self.pos_to_cords(pos))
-            if pionek != 0 and pionek.color == self.czyja_kolej:
+            pionek = self.get_pionek(cordy_kliknietego_pola)
+            if pionek is not None and pionek.color == self.czyja_kolej:
                 debug("[on_click]: przenoszenie!")
-                self.przesowany_pionek = pionek  # przejdz w tryb przenoszenia
-                self.zbij_pionek(self.pos_to_cords(pos))
-                self.tryb_przenoszenia = True
                 self._ruchy = mozliwe_ruchy(pionek.cords, pionek.color, *self.dwie_listy)
+                if len(self._ruchy) == 0:
+                    return
                 self.oznacz_pole(*self._ruchy.keys())
-                raise PodniesieniePionka(pionek.color)
+                self.podnies_pionek(pionek)
 
         else:  # JEST w trybie podniesionego pionka
             debug("[on_click]: odlozenie!")
-            if (self.pos_to_cords(pos)) in self._ruchy:
-                zbity_pionek = self._ruchy[self.pos_to_cords(pos)]  # zbicie pionka, jeśli jakiś jest do zbicia
-                if zbity_pionek != 0:
-                    self.zbij_pionek(*zbity_pionek)
-
-                self.przesun_pionek(self.przesowany_pionek, self.pos_to_cords(pos))
-                self.pionki.append(self.przesowany_pionek)
-                self.update()
-
+            if cordy_kliknietego_pola in self._ruchy:
+                self.zbij_pionek(self._ruchy[cordy_kliknietego_pola])
+                self.przesun_pionek(self.przesowany_pionek, cordy_kliknietego_pola)
+                self.pionkiNaSzachownicy.dodaj_pionek(self.przesowany_pionek)
                 self.czyja_kolej = not self.czyja_kolej  # koniec ruchu
-
                 if self.tryb_jenego_gracza:
                     self.ruch_ai()
+            else:
+                self.pionkiNaSzachownicy.dodaj_pionek(self.przesowany_pionek)
 
             self._ruchy = dict()
             self.odznacz_wszystkie_pola()
             self.update()
-            self.tryb_przenoszenia = False
-            raise OpuszczeniePionka
+            self.opuszczenie_pionka()
+
+    def opuszczenie_pionka(self):
+        self.tryb_przenoszenia = False
+        raise OpuszczeniePionka
+
+    def podnies_pionek(self, pionek):
+        self.zbij_pionek(pionek.cords)
+        self.przesowany_pionek = pionek  # przejdz w tryb przenoszenia
+        self.tryb_przenoszenia = True
+        raise PodniesieniePionka(pionek.color)
 
     def ruch_ai(self):
         try:

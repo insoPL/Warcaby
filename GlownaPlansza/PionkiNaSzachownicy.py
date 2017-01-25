@@ -11,7 +11,7 @@ class PionkiNaSzachownicy(pygame.sprite.RenderPlain):
         self._pionki = list()  # lista zawierajaca wszystkie pionki
 
         def dodaj_pionek(x, y, kolor):  # funkcja pomocnicza
-            self.dodaj_pionek(size_of_one_tile, (x, y), kolor)
+            self.dodaj_pionek(Pionek(size_of_one_tile, (x, y), kolor))
 
         for foo in range(0, 8, 2):  # dodaj pionki
             dodaj_pionek(foo+1, 7, Kolor.czarny)  # czarne - dol ekranu
@@ -22,8 +22,7 @@ class PionkiNaSzachownicy(pygame.sprite.RenderPlain):
             dodaj_pionek(foo+1, 1, Kolor.bialy)  # biale
             dodaj_pionek(foo, 0, Kolor.bialy)
 
-    def dodaj_pionek(self, size_of_one_tile, cords, kolor):
-        pionek = Pionek(size_of_one_tile, cords, kolor)
+    def dodaj_pionek(self, pionek):
         self._pionki.append(pionek)
         self.add_internal(pionek)
 
@@ -36,7 +35,7 @@ class PionkiNaSzachownicy(pygame.sprite.RenderPlain):
         for foo in self._pionki:
             if foo.cords == cords:
                 return foo
-        debug("nie ma tam pionka!")
+        raise ValueError
         return False
 
     @property
