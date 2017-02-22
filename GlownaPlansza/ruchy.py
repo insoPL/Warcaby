@@ -2,41 +2,58 @@
 from tools import *
 
 
-def mozliwe_ruchy(cords, color, biale, czarne):  # zwraca słownik dict[docelowy_cord] = zbity_pion
+def mozliwe_ruchy_i_bicia(cords, color, biale, czarne):  # zwraca słownik dict[docelowy_cord] = zbity_pion
+    return_dict = mozliwe_ruchy(cords, color, biale, czarne)
+    return_dict.update(mozliwe_bicia(cords,color,biale,czarne))
+    return return_dict
+
+
+def mozliwe_ruchy(cordy_pionka, kolor_pionka, biale, czarne):
     return_dict = dict()
-    if color == Kolor.bialy:  # jesli pionek jest bialy
-        if (cords[0]-1, cords[1]+1) not in czarne + biale:  # zwykly ruch
-            if cords[0]-1 >= 0 and cords[1]+1 <= 7:
-                return_dict[(cords[0]-1, cords[1]+1)] = 0
+    if kolor_pionka == Kolor.bialy:
+        if (cordy_pionka[0]-1, cordy_pionka[1]+1) not in czarne + biale:
+            if cordy_pionka[0]-1 >= 0 and cordy_pionka[1]+1 <= 7:
+                return_dict[(cordy_pionka[0] - 1, cordy_pionka[1] + 1)] = 0
 
-        if (cords[0]+1, cords[1]+1) not in czarne + biale:  # zwykly ruch
-            if cords[0]+1 <= 7 and cords[1]+1 <= 7:
-                return_dict[(cords[0]+1, cords[1]+1)] = 0
+        if (cordy_pionka[0]+1, cordy_pionka[1]+1) not in czarne + biale:
+            if cordy_pionka[0]+1 <= 7 and cordy_pionka[1]+1 <= 7:
+                return_dict[(cordy_pionka[0] + 1, cordy_pionka[1] + 1)] = 0
 
-        if (cords[0] - 1, cords[1] + 1) in czarne and (cords[0] - 2, cords[1] + 2) not in czarne + biale:
+    elif kolor_pionka == Kolor.czarny:
+        if (cordy_pionka[0]-1, cordy_pionka[1]-1) not in czarne + biale:
+            if cordy_pionka[0]-1 >= 0 and cordy_pionka[1]-1 >= 0:
+                return_dict[(cordy_pionka[0] - 1, cordy_pionka[1] - 1)] = 0
+
+        if (cordy_pionka[0]+1, cordy_pionka[1]-1) not in czarne + biale:
+            if cordy_pionka[0]+1 <= 7 and cordy_pionka[1]-1 >= 0:
+                return_dict[(cordy_pionka[0] + 1, cordy_pionka[1] - 1)] = 0
+    return return_dict
+
+
+def mozliwe_bicia(cordy_pionka, kolor_pionka, biale, czarne):
+    if kolor_pionka == Kolor.bialy:
+        przeciwnik = czarne
+        gracz = biale
+    elif kolor_pionka == Kolor.czarny:
+        przeciwnik = biale
+        gracz = czarne
+    wszystkie = przeciwnik + gracz
+    return_dict = dict()
+    if (cordy_pionka[0] - 1, cordy_pionka[1] + 1) in przeciwnik and (cordy_pionka[0] - 2, cordy_pionka[1] + 2) not in wszystkie:
+        if cordy_pionka[0] - 2 >= 0 and cordy_pionka[1] + 2 <= 7:
+            return_dict[(cordy_pionka[0] - 2, cordy_pionka[1] + 2)] = (cordy_pionka[0] - 1, cordy_pionka[1] + 1)
+
+    if (cordy_pionka[0] + 1, cordy_pionka[1] + 1) in przeciwnik and (cordy_pionka[0] + 2, cordy_pionka[1] + 2) not in wszystkie:
+        # Ruch bicia
+        if cordy_pionka[0] + 2 <= 7 and cordy_pionka[1] + 2 <= 7:
+            return_dict[(cordy_pionka[0] + 2, cordy_pionka[1] + 2)] = (cordy_pionka[0] + 1, cordy_pionka[1] + 1)
+
+        if (cordy_pionka[0] + 1, cordy_pionka[1] - 1) in przeciwnik and (cordy_pionka[0] + 2, cordy_pionka[1] - 2) not in wszystkie:
             # Ruch bicia
-            if cords[0] - 2 >= 0 and cords[1] + 2 <= 7:
-                return_dict[(cords[0] - 2, cords[1] + 2)] = (cords[0] - 1, cords[1] + 1)
-
-        if (cords[0] + 1, cords[1] + 1) in czarne and (cords[0] + 2, cords[1] + 2) not in czarne + biale:
+            if cordy_pionka[0] + 2 <= 7 and cordy_pionka[1]-2 >= 0:
+                return_dict[(cordy_pionka[0] + 2, cordy_pionka[1] - 2)] = (cordy_pionka[0] + 1, cordy_pionka[1] - 1)
+        if (cordy_pionka[0] - 1, cordy_pionka[1] - 1) in przeciwnik and (cordy_pionka[0] - 2, cordy_pionka[1] - 2) not in wszystkie:
             # Ruch bicia
-            if cords[0]+2 <= 7 and cords[1]+2 <= 7:
-                return_dict[(cords[0] + 2, cords[1] + 2)] = (cords[0] + 1, cords[1] + 1)
-    elif color == Kolor.czarny:
-        if (cords[0]-1, cords[1]-1) not in czarne + biale:  # zwykly ruch
-            if cords[0]-1 >= 0 and cords[1]-1 >= 0:
-                return_dict[(cords[0]-1, cords[1]-1)] = 0
-
-        if (cords[0]+1, cords[1]-1) not in czarne + biale:  # zwykly ruch
-            if cords[0]+1 <= 7 and cords[1]-1 >= 0:
-                return_dict[(cords[0]+1, cords[1]-1)] = 0
-
-        if (cords[0]+1, cords[1]-1) in biale and (cords[0]+2, cords[1]-2) not in czarne + biale:
-            # Ruch bicia
-            if cords[0]+2 <= 7 and cords[1]-2 >= 0:
-                return_dict[(cords[0]+2, cords[1]-2)] = (cords[0]+1, cords[1]-1)
-        if (cords[0]-1, cords[1]-1) in biale and (cords[0]-2, cords[1]-2) not in czarne + biale:
-            # Ruch bicia
-            if cords[0]-2 >= 0 and cords[1]-2 >= 0:
-                return_dict[(cords[0]-2, cords[1]-2)] = (cords[0]-1, cords[1]-1)
+            if cordy_pionka[0] - 2 >= 0 and cordy_pionka[1] - 2 >= 0:
+                return_dict[(cordy_pionka[0] - 2, cordy_pionka[1] - 2)] = (cordy_pionka[0] - 1, cordy_pionka[1] - 1)
     return return_dict

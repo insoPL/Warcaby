@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import random
-from ..ruchy import mozliwe_ruchy
+from ..ruchy import mozliwe_ruchy_i_bicia
 from tools import *
 from ai_tools import *
 
@@ -66,7 +66,7 @@ def znajdz_wszelkie_mozliwe_ruchy(lista_bialych, lista_czarnych, kolor):
         raise ValueError("Bledny kolor:  Kolor "+str(kolor))
 
     for foo in lista_pionkow_gracza:  # foo - coordynaty kazdego czarnego pionka
-        mozliwe_ruchy_foo = mozliwe_ruchy(foo, kolor, lista_bialych, lista_czarnych)
+        mozliwe_ruchy_foo = mozliwe_ruchy_i_bicia(foo, kolor, lista_bialych, lista_czarnych)
         for ruch in mozliwe_ruchy_foo.items():
             mozliwe_ruchy_wszystkich_pionkow.append((foo, ruch[0], ruch[1]))
     return mozliwe_ruchy_wszystkich_pionkow

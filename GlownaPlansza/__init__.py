@@ -3,7 +3,7 @@
 from Pionek import Pionek
 from Oznaczenie import Oznaczenie
 from AI import ai
-from ruchy import mozliwe_ruchy
+from ruchy import mozliwe_ruchy_i_bicia
 from Szachownica import Szachownica
 from tools import *
 
@@ -26,7 +26,7 @@ class GlownaPlansza(Szachownica):
             pionek = self.get_pionek(cordy_kliknietego_pola)
             if pionek is not None and pionek.color == self.czyja_kolej:
                 debug("[on_click]: przenoszenie!")
-                self._ruchy = mozliwe_ruchy(pionek.cords, pionek.color, *self.dwie_listy)
+                self._ruchy = mozliwe_ruchy_i_bicia(pionek.cords, pionek.color, *self.dwie_listy)
                 if len(self._ruchy) == 0:
                     return
                 self.oznacz_pole(*self._ruchy.keys())
