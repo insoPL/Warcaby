@@ -48,12 +48,12 @@ def mozliwe_bicia(cordy_pionka, kolor_pionka, biale, czarne):
         if cordy_pionka[0] + 2 <= 7 and cordy_pionka[1] + 2 <= 7:
             return_dict[(cordy_pionka[0] + 2, cordy_pionka[1] + 2)] = (cordy_pionka[0] + 1, cordy_pionka[1] + 1)
 
-        if (cordy_pionka[0] + 1, cordy_pionka[1] - 1) in przeciwnik and (cordy_pionka[0] + 2, cordy_pionka[1] - 2) not in wszystkie:
-            # Ruch bicia
-            if cordy_pionka[0] + 2 <= 7 and cordy_pionka[1]-2 >= 0:
-                return_dict[(cordy_pionka[0] + 2, cordy_pionka[1] - 2)] = (cordy_pionka[0] + 1, cordy_pionka[1] - 1)
-        if (cordy_pionka[0] - 1, cordy_pionka[1] - 1) in przeciwnik and (cordy_pionka[0] - 2, cordy_pionka[1] - 2) not in wszystkie:
-            # Ruch bicia
-            if cordy_pionka[0] - 2 >= 0 and cordy_pionka[1] - 2 >= 0:
-                return_dict[(cordy_pionka[0] - 2, cordy_pionka[1] - 2)] = (cordy_pionka[0] - 1, cordy_pionka[1] - 1)
+    if (cordy_pionka[0] + 1, cordy_pionka[1] - 1) in przeciwnik and (cordy_pionka[0] + 2, cordy_pionka[1] - 2) not in wszystkie:
+        # Ruch bicia
+        if cordy_pionka[0] + 2 <= 7 and cordy_pionka[1]-2 >= 0:
+            return_dict[(cordy_pionka[0] + 2, cordy_pionka[1] - 2)] = (cordy_pionka[0] + 1, cordy_pionka[1] - 1)
+    if (cordy_pionka[0] - 1, cordy_pionka[1] - 1) in przeciwnik and (cordy_pionka[0] - 2, cordy_pionka[1] - 2) not in wszystkie:
+        # Ruch bicia
+        if cordy_pionka[0] - 2 >= 0 and cordy_pionka[1] - 2 >= 0:
+            return_dict[(cordy_pionka[0] - 2, cordy_pionka[1] - 2)] = (cordy_pionka[0] - 1, cordy_pionka[1] - 1)
     return return_dict
