@@ -3,7 +3,7 @@
 from Pionek import Pionek
 from Oznaczenie import Oznaczenie
 from AI import ai
-from ruchy import mozliwe_ruchy_i_bicia
+from ruchy import *
 from Szachownica import Szachownica
 from tools import *
 
@@ -18,17 +18,37 @@ class GlownaPlansza(Szachownica):
         self.przesowany_pionek = None
         self.tryb_przenoszenia = False
 
+        self.w_trakcie_ruchy = False
+        self.wszystkie_mozliwe_ruchy = dict()
+
+    def poczatek_ruchu_gracza(self, kolor_gracza):
+        biale, czarne = self.dwie_listy
+        self.wszystkie_mozliwe_ruchy = dict()
+        for cordy_pionka in biale:
+            mozliwe_bicia_pionka = mozliwe_bicia(cordy_pionka, kolor_gracza, biale, czarne)
+            if len(mozliwe_bicia_pionka) != 0:
+                self.wszystkie_mozliwe_ruchy[cordy_pionka] = mozliwe_bicia_pionka
+        if len(self.wszystkie_mozliwe_ruchy) == 0:
+            for cordy_pionka in biale:
+                mozliwe_ruchy_pionka = mozliwe_ruchy(cordy_pionka, kolor_gracza, biale, czarne)
+                if len(mozliwe_ruchy_pionka) != 0:
+                    self.wszystkie_mozliwe_ruchy[cordy_pionka] = mozliwe_ruchy_pionka
+        if len(self.wszystkie_mozliwe_ruchy) == 0:
+            raise BrakMozliwegoRuchu
+        print self.wszystkie_mozliwe_ruchy
+
     def on_click(self, pos):
         debug("[on_click]: ", pos)
         cordy_kliknietego_pola = self.pos_to_cords(pos)
+        self.poczatek_ruchu_gracza(Kolor.bialy) # przeniesc do realnego nastepnego ruchu
 
         if not self.tryb_przenoszenia:  # NIE jest w trybie podniesionego pionka
             pionek = self.get_pionek(cordy_kliknietego_pola)
-            if pionek is not None and pionek.color == self.czyja_kolej:
+            if pionek is not None and pionek.color == self.czyja_kolej and cordy_kliknietego_pola in self.wszystkie_mozliwe_ruchy.keys():
                 debug("[on_click]: przenoszenie!")
-                self._ruchy = mozliwe_ruchy_i_bicia(pionek.cords, pionek.color, *self.dwie_listy)
+                self._ruchy = mozliwe_bicia(pionek.cords, pionek.color, *self.dwie_listy)
                 if len(self._ruchy) == 0:
-                    return
+                    self._ruchy = mozliwe_ruchy(pionek.cords, pionek.color, *self.dwie_listy)
                 self.oznacz_pole(*self._ruchy.keys())
                 self.podnies_pionek(pionek)
 
@@ -66,7 +86,5 @@ class GlownaPlansza(Szachownica):
             raise BrakMozliwegoRuchu
         if zbite_pole != 0:
             self.zbij_pionek(zbite_pole)
-        przenoszony_pionek = self.get_pionek(cordy_pionka)
-        self.czysc_fragment_ekranu(przenoszony_pionek.rect)
-        przenoszony_pionek.move(*cordy_docelowe)
+        self.przesun_pionek(self.get_pionek(cordy_pionka), cordy_docelowe)
         self.czyja_kolej = not self.czyja_kolej
