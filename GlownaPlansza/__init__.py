@@ -14,33 +14,41 @@ class GlownaPlansza(Szachownica):
         Szachownica.__init__(self, screen)
         self.czyja_kolej = Kolor.bialy  # zaczynają białe
         self._ruchy = dict()  # przechowuje dane o mozliwych ruchach
-        self.tryb_jenego_gracza = True
+        self.tryb_jenego_gracza = False
         self.przesowany_pionek = None
         self.tryb_przenoszenia = False
 
         self.w_trakcie_ruchy = False
         self.wszystkie_mozliwe_ruchy = dict()
+        self.poczatek_ruchu_gracza(Kolor.bialy)
 
     def poczatek_ruchu_gracza(self, kolor_gracza):
-        biale, czarne = self.dwie_listy
+        debug("poaczatek ruchu")
+        if kolor_gracza == Kolor.bialy:
+            debug("bialego gracza")
+            pionki_gracza, pionki_przeciwnika = self.dwie_listy
+        elif kolor_gracza == Kolor.czarny:
+            debug("czarnego gracza")
+            pionki_przeciwnika, pionki_gracza = self.dwie_listy
+        else:
+            raise ValueError
+
         self.wszystkie_mozliwe_ruchy = dict()
-        for cordy_pionka in biale:
-            mozliwe_bicia_pionka = mozliwe_bicia(cordy_pionka, kolor_gracza, biale, czarne)
+        for cordy_pionka in pionki_gracza:
+            mozliwe_bicia_pionka = mozliwe_bicia(cordy_pionka, kolor_gracza, *self.dwie_listy)
             if len(mozliwe_bicia_pionka) != 0:
                 self.wszystkie_mozliwe_ruchy[cordy_pionka] = mozliwe_bicia_pionka
         if len(self.wszystkie_mozliwe_ruchy) == 0:
-            for cordy_pionka in biale:
-                mozliwe_ruchy_pionka = mozliwe_ruchy(cordy_pionka, kolor_gracza, biale, czarne)
+            for cordy_pionka in pionki_gracza:
+                mozliwe_ruchy_pionka = mozliwe_ruchy(cordy_pionka, kolor_gracza, *self.dwie_listy)
                 if len(mozliwe_ruchy_pionka) != 0:
                     self.wszystkie_mozliwe_ruchy[cordy_pionka] = mozliwe_ruchy_pionka
         if len(self.wszystkie_mozliwe_ruchy) == 0:
             raise BrakMozliwegoRuchu
-        print self.wszystkie_mozliwe_ruchy
 
     def on_click(self, pos):
         debug("[on_click]: ", pos)
         cordy_kliknietego_pola = self.pos_to_cords(pos)
-        self.poczatek_ruchu_gracza(Kolor.bialy) # przeniesc do realnego nastepnego ruchu
 
         if not self.tryb_przenoszenia:  # NIE jest w trybie podniesionego pionka
             pionek = self.get_pionek(cordy_kliknietego_pola)
@@ -61,6 +69,9 @@ class GlownaPlansza(Szachownica):
                 self.czyja_kolej = not self.czyja_kolej  # koniec ruchu
                 if self.tryb_jenego_gracza:
                     self.ruch_ai()
+                else:
+                    self.poczatek_ruchu_gracza(self.czyja_kolej)
+
             else:
                 self.pionkiNaSzachownicy.dodaj_pionek(self.przesowany_pionek)
 

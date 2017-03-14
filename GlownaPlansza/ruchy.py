@@ -4,7 +4,7 @@ from tools import *
 
 def mozliwe_ruchy_i_bicia(cords, color, biale, czarne):  # zwraca słownik dict[docelowy_cord] = zbity_pion
     return_dict = mozliwe_ruchy(cords, color, biale, czarne)
-    return_dict.update(mozliwe_bicia(cords,color,biale,czarne))
+    return_dict.update(mozliwe_bicia(cords, color, biale, czarne))
     return return_dict
 
 
@@ -37,6 +37,9 @@ def mozliwe_bicia(cordy_pionka, kolor_pionka, biale, czarne):
     elif kolor_pionka == Kolor.czarny:
         przeciwnik = biale
         gracz = czarne
+    else:
+        raise ValueError
+
     wszystkie = przeciwnik + gracz
     return_dict = dict()
     if (cordy_pionka[0] - 1, cordy_pionka[1] + 1) in przeciwnik and (cordy_pionka[0] - 2, cordy_pionka[1] + 2) not in wszystkie:
@@ -44,16 +47,14 @@ def mozliwe_bicia(cordy_pionka, kolor_pionka, biale, czarne):
             return_dict[(cordy_pionka[0] - 2, cordy_pionka[1] + 2)] = (cordy_pionka[0] - 1, cordy_pionka[1] + 1)
 
     if (cordy_pionka[0] + 1, cordy_pionka[1] + 1) in przeciwnik and (cordy_pionka[0] + 2, cordy_pionka[1] + 2) not in wszystkie:
-        # Ruch bicia
         if cordy_pionka[0] + 2 <= 7 and cordy_pionka[1] + 2 <= 7:
             return_dict[(cordy_pionka[0] + 2, cordy_pionka[1] + 2)] = (cordy_pionka[0] + 1, cordy_pionka[1] + 1)
 
     if (cordy_pionka[0] + 1, cordy_pionka[1] - 1) in przeciwnik and (cordy_pionka[0] + 2, cordy_pionka[1] - 2) not in wszystkie:
-        # Ruch bicia
         if cordy_pionka[0] + 2 <= 7 and cordy_pionka[1]-2 >= 0:
             return_dict[(cordy_pionka[0] + 2, cordy_pionka[1] - 2)] = (cordy_pionka[0] + 1, cordy_pionka[1] - 1)
+
     if (cordy_pionka[0] - 1, cordy_pionka[1] - 1) in przeciwnik and (cordy_pionka[0] - 2, cordy_pionka[1] - 2) not in wszystkie:
-        # Ruch bicia
         if cordy_pionka[0] - 2 >= 0 and cordy_pionka[1] - 2 >= 0:
             return_dict[(cordy_pionka[0] - 2, cordy_pionka[1] - 2)] = (cordy_pionka[0] - 1, cordy_pionka[1] - 1)
     return return_dict
