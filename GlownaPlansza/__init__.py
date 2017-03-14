@@ -14,7 +14,7 @@ class GlownaPlansza(Szachownica):
         Szachownica.__init__(self, screen)
         self.czyja_kolej = Kolor.bialy  # zaczynają białe
         self._ruchy = dict()  # przechowuje dane o mozliwych ruchach
-        self.tryb_jenego_gracza = False
+        self.tryb_jenego_gracza = True
         self.przesowany_pionek = None
         self.tryb_przenoszenia = False
 
@@ -69,6 +69,7 @@ class GlownaPlansza(Szachownica):
                 self.czyja_kolej = not self.czyja_kolej  # koniec ruchu
                 if self.tryb_jenego_gracza:
                     self.ruch_ai()
+                    self.poczatek_ruchu_gracza(self.czyja_kolej)
                 else:
                     self.poczatek_ruchu_gracza(self.czyja_kolej)
 
