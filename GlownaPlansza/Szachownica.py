@@ -41,7 +41,7 @@ class Szachownica:
     def pos_to_cords(self, pos):  # change Surface coords to chess cords
         return pos[0] / (self.rect.width / 8), 7 - (pos[1] / (self.rect.height / 8))
 
-    def zbij_pionek(self, cords):
+    def usun_pionek(self, cords):
         try:
             pionek = self.pionkiNaSzachownicy.get_pionek(cords)
         except ValueError:
