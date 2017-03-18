@@ -14,7 +14,7 @@ class GlownaPlansza(Szachownica):
         Szachownica.__init__(self, screen)
         self.czyja_kolej = Kolor.bialy  # zaczynają białe
         self._ruchy = dict()  # przechowuje dane o mozliwych ruchach
-        self.tryb_jednego_gracza = True
+        self.tryb_jednego_gracza = False
         self.przesowany_pionek = None
         self.tryb_przenoszenia = False
 
@@ -66,12 +66,18 @@ class GlownaPlansza(Szachownica):
                 self.przesun_pionek(self.przesowany_pionek, cordy_kliknietego_pola)
                 self.pionkiNaSzachownicy.dodaj_pionek(self.przesowany_pionek)
                 self.czyja_kolej = not self.czyja_kolej  # koniec ruchu
+                self.wszystkie_mozliwe_ruchy = dict()
                 if self._ruchy[cordy_kliknietego_pola] != 0:
                     self.usun_pionek(self._ruchy[cordy_kliknietego_pola])
-                if self.tryb_jednego_gracza:
+                    moze_jeszcze_bic = mozliwe_bicia(self.przesowany_pionek.cords, self.przesowany_pionek.color, *self.dwie_listy)
+                    if len(moze_jeszcze_bic) != 0:
+                        self.wszystkie_mozliwe_ruchy[self.przesowany_pionek.cords] = moze_jeszcze_bic
+                        self.czyja_kolej = not self.czyja_kolej
+
+                if self.tryb_jednego_gracza and len(self.wszystkie_mozliwe_ruchy) == 0:
                     self.ruch_ai()
                     self.poczatek_ruchu_gracza(self.czyja_kolej)
-                else:
+                elif len(self.wszystkie_mozliwe_ruchy) == 0:
                     self.poczatek_ruchu_gracza(self.czyja_kolej)
 
             else:
