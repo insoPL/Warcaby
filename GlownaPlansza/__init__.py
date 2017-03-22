@@ -23,12 +23,11 @@ class GlownaPlansza(Szachownica):
         self.poczatek_ruchu_gracza(Kolor.bialy)
 
     def poczatek_ruchu_gracza(self, kolor_gracza):
-        debug("poaczatek ruchu")
         if kolor_gracza == Kolor.bialy:
-            debug("bialego gracza")
+            debug("Początek ruchu bialego gracza")
             pionki_gracza, pionki_przeciwnika = self.dwie_listy
         elif kolor_gracza == Kolor.czarny:
-            debug("czarnego gracza")
+            debug("Początek ruchu czarnego gracza")
             pionki_przeciwnika, pionki_gracza = self.dwie_listy
         else:
             raise ValueError
@@ -47,13 +46,12 @@ class GlownaPlansza(Szachownica):
             raise BrakMozliwegoRuchu
 
     def on_click(self, pos):
-        debug("[on_click]: ", pos)
         cordy_kliknietego_pola = self.pos_to_cords(pos)
 
         if not self.tryb_przenoszenia:  # NIE jest w trybie podniesionego pionka
             pionek = self.get_pionek(cordy_kliknietego_pola)
             if pionek is not None and pionek.color == self.czyja_kolej and cordy_kliknietego_pola in self.wszystkie_mozliwe_ruchy.keys():
-                debug("[on_click]: przenoszenie!")
+                debug("[on_click]: Podniesienie Pionka!")
                 self._ruchy = mozliwe_bicia(pionek.cords, pionek.color, *self.dwie_listy)
                 if len(self._ruchy) == 0:
                     self._ruchy = mozliwe_ruchy(pionek.cords, pionek.color, *self.dwie_listy)
@@ -61,7 +59,7 @@ class GlownaPlansza(Szachownica):
                 self.podnies_pionek(pionek)
 
         else:  # JEST w trybie podniesionego pionka
-            debug("[on_click]: odlozenie!")
+            debug("[on_click]: Opuszczenie Pionka!")
             if cordy_kliknietego_pola in self._ruchy:
                 self.przesun_pionek(self.przesowany_pionek, cordy_kliknietego_pola)
                 self.pionkiNaSzachownicy.dodaj_pionek(self.przesowany_pionek)
@@ -99,10 +97,13 @@ class GlownaPlansza(Szachownica):
         raise PodniesieniePionka(pionek.color)
 
     def ruch_ai(self):
+        debug("[AI]: Rozpoczecie pracy AI")
         try:
             cordy_pionka, cordy_docelowe, zbite_pole = ai(*self.dwie_listy)
         except BrakMozliwegoRuchu:
             raise BrakMozliwegoRuchu
+        debug("[AI]: Zakonczylo prace wybierając ruch", cordy_pionka, "->", cordy_docelowe)
+
         if zbite_pole != 0:
             self.usun_pionek(zbite_pole)
         self.przesun_pionek(self.get_pionek(cordy_pionka), cordy_docelowe)

@@ -18,7 +18,7 @@ def ai(lista_bialych, lista_czarnych):
         wynik = _ai_rek(nowa_lista_bialych, nowa_lista_czarnych, 1, deep)
 
         wyniki.append((cordy_pionka, cordy_docelowe, wynik, cordy_zbitego))
-        debug("wynik dla", cordy_pionka, "->", cordy_docelowe, ": ", wynik)
+        debug("[AI] wartosc ruchu", cordy_pionka, "->", cordy_docelowe, ": ", wynik)
     return random_max_ruch(wyniki)
 
 
