@@ -14,7 +14,7 @@ class GlownaPlansza(Szachownica):
         Szachownica.__init__(self, screen)
         self.czyja_kolej = Kolor.bialy  # zaczynają białe
         self._ruchy = dict()  # przechowuje dane o mozliwych ruchach
-        self.tryb_jednego_gracza = False
+        self.tryb_jednego_gracza = True
         self.przesowany_pionek = None
         self.tryb_przenoszenia = False
 
