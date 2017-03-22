@@ -22,33 +22,33 @@ def ai(lista_bialych, lista_czarnych):
     return random_max_ruch(wyniki)
 
 
-def _ai_rek(lista_przeciwnika, lista_gracza, kolor, deep):  # zwraca (skad, dokad, ile_zbije, co_zbije)
+def _ai_rek(lista_bialych, lista_czarnych, kolor_robiacy_ruch, deep):
+    min_max_value = None
     if deep == 0:
-        return len(lista_gracza) - len(lista_przeciwnika)
+        return len(lista_czarnych) - len(lista_bialych)
     deep -= 1  # ogranicznik głębokości
 
-    mozliwe_ruchy_wszystkich_pionkow = znajdz_wszelkie_mozliwe_ruchy(lista_przeciwnika, lista_gracza, kolor)
+    mozliwe_ruchy_wszystkich_pionkow = znajdz_wszelkie_mozliwe_ruchy(lista_bialych, lista_czarnych, kolor_robiacy_ruch)
 
     if len(mozliwe_ruchy_wszystkich_pionkow) == 0:
-        return len(lista_gracza) - len(lista_przeciwnika)
-    # lista krotek (cordy_pionka, cordy_docelowe, wynik, cordy_zbitego)
-    min_max_value = None
-    if kolor == Kolor.czarny:
+        return len(lista_czarnych) - len(lista_bialych)
+
+    if kolor_robiacy_ruch == Kolor.czarny:
         for cordy_pionka, cordy_docelowe, cordy_zbitego in mozliwe_ruchy_wszystkich_pionkow:
-            nowa_lista_czarnych = przesun_pionek_na_liscie(lista_gracza, cordy_pionka, cordy_docelowe)
+            nowa_lista_czarnych = przesun_pionek_na_liscie(lista_czarnych, cordy_pionka, cordy_docelowe)
             if cordy_zbitego != 0:
-                nowa_lista_bialych = usun_pionek_z_listy(lista_przeciwnika, cordy_zbitego)
+                nowa_lista_bialych = usun_pionek_z_listy(lista_bialych, cordy_zbitego)
             else:
-                nowa_lista_bialych = lista_przeciwnika
-            wynik_rekurencji = _ai_rek(nowa_lista_bialych, nowa_lista_czarnych, Kolor.bialy, deep)
+                nowa_lista_bialych = lista_bialych
+            wynik_rekurencji = _ai_rek(nowa_lista_bialych, nowa_lista_czarnych, not kolor_robiacy_ruch, deep)
             min_max_value = max_wynik(min_max_value, wynik_rekurencji)
-    elif kolor == Kolor.bialy:
+    elif kolor_robiacy_ruch == Kolor.bialy:
         for cordy_pionka, cordy_docelowe, cordy_zbitego in mozliwe_ruchy_wszystkich_pionkow:
-            nowa_lista_bialych = przesun_pionek_na_liscie(lista_przeciwnika, cordy_pionka, cordy_docelowe)
+            nowa_lista_bialych = przesun_pionek_na_liscie(lista_bialych, cordy_pionka, cordy_docelowe)
             if cordy_zbitego != 0:
-                nowa_lista_czarnych = usun_pionek_z_listy(lista_gracza, cordy_zbitego)
+                nowa_lista_czarnych = usun_pionek_z_listy(lista_czarnych, cordy_zbitego)
             else:
-                nowa_lista_czarnych = lista_gracza
+                nowa_lista_czarnych = lista_czarnych
             wynik_rekurencji = _ai_rek(nowa_lista_bialych, nowa_lista_czarnych, Kolor.czarny, deep)
             min_max_value = min_wynik(min_max_value, wynik_rekurencji)
     return min_max_value
@@ -74,4 +74,3 @@ class TestAI(unittest.TestCase):
 
     def testPrzewidywaniaRuchowPrzeciwnika(self):
         self.assertEqual(ai([(0,0),(2,2),(4,2)],[(3,3)]),((3,3),(5,1),(4,2)))
-        self.ass
