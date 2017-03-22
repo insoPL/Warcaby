@@ -102,7 +102,7 @@ class GlownaPlansza(Szachownica):
             cordy_pionka, cordy_docelowe, zbite_pole = ai(*self.dwie_listy)
         except BrakMozliwegoRuchu:
             raise BrakMozliwegoRuchu
-        debug("[AI]: Zakonczylo prace wybierając ruch", cordy_pionka, "->", cordy_docelowe)
+        debug("[AI]: AI zakonczylo prace wybierając ruch", cordy_pionka, "->", cordy_docelowe)
 
         if zbite_pole != 0:
             self.usun_pionek(zbite_pole)

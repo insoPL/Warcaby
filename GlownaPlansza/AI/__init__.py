@@ -53,3 +53,25 @@ def _ai_rek(lista_przeciwnika, lista_gracza, kolor, deep):  # zwraca (skad, doka
             min_max_value = min_wynik(min_max_value, wynik_rekurencji)
     return min_max_value
 
+
+class TestAI(unittest.TestCase):
+    def testBrakMozliwychRuchow(self):
+        self.assertRaises(BrakMozliwegoRuchu, ai, [], [])
+        self.assertRaises(BrakMozliwegoRuchu, ai, [], [(2,0)])
+        self.assertRaises(BrakMozliwegoRuchu, ai, [(0,0),(2,0)], [(1,1)])
+
+    def testProstychRuchow(self):
+        self.assertEqual(ai([], [(7,7)]), ((7,7), (6,6), 0))
+        self.assertEqual(ai([(0,6)], [(1,7)]), ((1,7), (2,6), 0))
+
+    def testProstyRuchBijacy(self):
+        self.assertEqual(ai([(1,1)],[(2,2)]),((2,2),(0,0),(1,1)))
+        self.assertEqual(ai([(7,3),(5,3)],[(6,4)]),((6,4),(4,2),(5,3)))
+
+    def testUnikanieRuchowZbijajacych(self):
+        self.assertEqual(ai([(1,1)],[(3,3)]),((3,3),(4,2),0))
+        self.assertEqual(ai([(2,2),(1,1)],[(3,3),(7,7)]),((3,3),(4,2),0))
+
+    def testPrzewidywaniaRuchowPrzeciwnika(self):
+        self.assertEqual(ai([(0,0),(2,2),(4,2)],[(3,3)]),((3,3),(5,1),(4,2)))
+        self.ass
