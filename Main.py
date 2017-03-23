@@ -3,6 +3,7 @@ from pygame.locals import *
 from tools import *
 from GlownaPlansza import GlownaPlansza
 from PodniesionyPionek import PodniesionyPionek
+from Okienko import Okienko
 
 
 def main():
@@ -34,10 +35,13 @@ def main():
     clock = pygame.time.Clock()
     podniesiony_pionek = None
 
+    okienko = Okienko(screen, screen.get_rect().center)
+
     # Event loop
     while True:
         # ograniczenie klatek na sekunde
         clock.tick(20)
+        okienko.update()
 
         try:
             for event in pygame.event.get():

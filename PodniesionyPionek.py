@@ -2,6 +2,7 @@
 from tools import *
 from ObiektNaWierzchu import ObiektNaWierzchu
 
+
 class PodniesionyPionek:
     def __init__(self, screen, size, cords, color):
         if color == Kolor.czarny:
@@ -11,10 +12,13 @@ class PodniesionyPionek:
         else:
             raise ValueError
 
-        self.obiektNaWierzchu = ObiektNaWierzchu(screen, size, cords, image, rect)
+        size = (size[0]+30, size[1]+30)  # powieksz go troche
+        image = pygame.transform.scale(image, size)
+
+        self.obiektNaWierzchu = ObiektNaWierzchu(screen, cords, image)
 
     def ukryj(self):
         self.obiektNaWierzchu.ukryj()
 
     def update(self):
-        self.obiektNaWierzchu.update()
+        self.obiektNaWierzchu.przesun(pygame.mouse.get_pos())
