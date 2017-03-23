@@ -51,6 +51,7 @@ def main():
             podniesiony_pionek = PodniesionyPionek(screen, glowna_rozgrywka.size_of_one_tile, pygame.mouse.get_pos(), event.kolor)
         except OpuszczeniePionka:
             podniesiony_pionek = None
+
         if podniesiony_pionek is not None:
             podniesiony_pionek.update()
         pygame.display.flip()
