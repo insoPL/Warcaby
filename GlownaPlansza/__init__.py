@@ -99,12 +99,13 @@ class GlownaPlansza(Szachownica):
     def ruch_ai(self):
         debug("[AI]: Rozpoczecie pracy AI")
         try:
-            cordy_pionka, cordy_docelowe, zbite_pole = ai(*self.dwie_listy)
+            cordy_pionka, cordy_docelowe, zbite_pola = ai(*self.dwie_listy)
         except BrakMozliwegoRuchu:
             raise BrakMozliwegoRuchu
         debug("[AI]: AI zakonczylo prace wybierając ruch", cordy_pionka, "->", cordy_docelowe)
 
-        if zbite_pole != 0:
-            self.usun_pionek(zbite_pole)
+        if len(zbite_pola) != 0:
+            for zbite_pole in zbite_pola:
+                self.usun_pionek(zbite_pole)
         self.przesun_pionek(self.get_pionek(cordy_pionka), cordy_docelowe)
         self.czyja_kolej = not self.czyja_kolej

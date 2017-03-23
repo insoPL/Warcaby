@@ -28,13 +28,13 @@ def znajdz_wszelkie_mozliwe_ruchy(lista_bialych, lista_czarnych, kolor):
 
 def random_max_ruch(mozliwe_ruchy_wszystkich_pionkow):
     maxim = None
-    for pole_pionka, pole_docelowe, zbite_pionki, zbite_pole in mozliwe_ruchy_wszystkich_pionkow:
+    for pole_pionka, pole_docelowe, zbite_pionki, zbite_pola in mozliwe_ruchy_wszystkich_pionkow:
         if maxim < zbite_pionki:
             maxim = zbite_pionki
     ret_list = list()
-    for pole_pionka, pole_docelowe, zbite_pionki, zbite_pole in mozliwe_ruchy_wszystkich_pionkow:
+    for pole_pionka, pole_docelowe, zbite_pionki, zbite_pola in mozliwe_ruchy_wszystkich_pionkow:
         if zbite_pionki == maxim:
-            ret_list.append((pole_pionka, pole_docelowe, zbite_pole))
+            ret_list.append((pole_pionka, pole_docelowe, zbite_pola))
     if len(ret_list) != 0:
         return random.choice(ret_list)
     else:
