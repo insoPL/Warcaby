@@ -38,7 +38,7 @@ def random_max_ruch(mozliwe_ruchy_wszystkich_pionkow):
     if len(ret_list) != 0:
         return random.choice(ret_list)
     else:
-        raise BrakMozliwegoRuchu
+        raise BrakMozliwegoRuchu(Kolor.bialy)
 
 
 def max_wynik(best_value, this_value):

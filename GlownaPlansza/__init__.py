@@ -43,7 +43,7 @@ class GlownaPlansza(Szachownica):
                 if len(mozliwe_ruchy_pionka) != 0:
                     self.wszystkie_mozliwe_ruchy[cordy_pionka] = mozliwe_ruchy_pionka
         if len(self.wszystkie_mozliwe_ruchy) == 0:
-            raise BrakMozliwegoRuchu
+            raise BrakMozliwegoRuchu(Kolor.przeciwny(kolor_gracza))
 
     def on_click(self, pos):
         cordy_kliknietego_pola = self.pos_to_cords(pos)
@@ -98,10 +98,7 @@ class GlownaPlansza(Szachownica):
 
     def ruch_ai(self):
         debug("[AI]: Rozpoczecie pracy AI")
-        try:
-            cordy_pionka, cordy_docelowe, zbite_pola = ai(*self.dwie_listy)
-        except BrakMozliwegoRuchu:
-            raise BrakMozliwegoRuchu
+        cordy_pionka, cordy_docelowe, zbite_pola = ai(*self.dwie_listy)
         debug("[AI]: AI zakonczylo prace wybierając ruch", cordy_pionka, "->", cordy_docelowe)
 
         if len(zbite_pola) != 0:

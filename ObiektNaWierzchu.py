@@ -23,6 +23,10 @@ class ObiektNaWierzchu(pygame.sprite.RenderPlain):
     def ukryj(self):
         self.screen.blit(self.stary_screen, self.onw.rect, self.onw.rect)
 
+    @property
+    def rect(self):
+        return self.onw.rect
+
 
 class _ObiektNaWierzchu(pygame.sprite.Sprite):
     def __init__(self, cords, image):

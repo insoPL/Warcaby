@@ -3,7 +3,7 @@ from pygame.locals import *
 from tools import *
 from GlownaPlansza import GlownaPlansza
 from PodniesionyPionek import PodniesionyPionek
-from Okienko import Okienko
+from Komunikat import wyswietl_komunikat_o_wyniku_meczu
 
 
 def main():
@@ -35,26 +35,28 @@ def main():
     clock = pygame.time.Clock()
     podniesiony_pionek = None
 
-    okienko = Okienko(screen, screen.get_rect().center)
-
     # Event loop
     while True:
         # ograniczenie klatek na sekunde
         clock.tick(20)
-        okienko.update()
 
         try:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     return
-                if event.type == MOUSEBUTTONDOWN and glowna_rozgrywka.rect.collidepoint(event.pos):
+                elif event.type == MOUSEBUTTONDOWN and glowna_rozgrywka.rect.collidepoint(event.pos):
                     glowna_rozgrywka.on_click(event.pos)
-                if event.type == MOUSEBUTTONUP and glowna_rozgrywka.przesowany_pionek != -1:
+                elif event.type == MOUSEBUTTONUP and glowna_rozgrywka.przesowany_pionek != -1:
                     glowna_rozgrywka.on_click(event.pos)
+
         except PodniesieniePionka as event:
             podniesiony_pionek = PodniesionyPionek(screen, glowna_rozgrywka.size_of_one_tile, pygame.mouse.get_pos(), event.kolor)
         except OpuszczeniePionka:
             podniesiony_pionek = None
+        except BrakMozliwegoRuchu as event:
+            podniesiony_pionek.ukryj()
+            wyswietl_komunikat_o_wyniku_meczu(screen, event.kto_wygral)
+            return
 
         if podniesiony_pionek is not None:
             podniesiony_pionek.update()

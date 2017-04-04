@@ -32,11 +32,11 @@ def filtruj_duplikaty(arg):
 
 
 class BrakMozliwegoRuchu(Exception):
-    def __init__(self):
-        pass
+    def __init__(self, kto_wygral):
+        self.kto_wygral = kto_wygral
 
     def __str__(self):
-        return "Brak mozliwego ruchu. Koniec gry!"
+        return "Brak mozliwego ruchu. Mecz wygral:" + str(self.kto_wygral)
 
 
 class PodniesieniePionka(Exception):
@@ -72,3 +72,4 @@ class Kolor:
             return Kolor.bialy
         else:
             raise ValueError("Nie wlasciwy Kolor: " + str(kolor))
+
