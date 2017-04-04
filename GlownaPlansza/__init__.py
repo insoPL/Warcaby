@@ -10,11 +10,11 @@ from tools import *
 
 class GlownaPlansza(Szachownica):
     """klasa reprezentujaca szachownice i calą jej zawartość"""
-    def __init__(self, screen):
+    def __init__(self, screen, tryb_jednego_gracza):
         Szachownica.__init__(self, screen)
         self.czyja_kolej = Kolor.bialy  # zaczynają białe
         self._ruchy = dict()  # przechowuje dane o mozliwych ruchach
-        self.tryb_jednego_gracza = True
+        self.tryb_jednego_gracza = tryb_jednego_gracza
         self.przesowany_pionek = None
         self.tryb_przenoszenia = False
 

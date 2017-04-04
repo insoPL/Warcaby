@@ -38,22 +38,25 @@ class Komunikat:
             self.dodaj_tekst(surface, tekst, kolor_czcionki, kolor_wypelnienia, cords, wysokosc)
             wysokosc += 50
 
-        rozmiar_przycisku = (100, 60)
-        self.przycisk = pygame.Surface(rozmiar_przycisku)
-        self.przycisk.fill((255, 255, 255))
-        basicfont = pygame.font.SysFont(None, 48)
-        text = basicfont.render("ok", True, kolor_czcionki, (255, 255, 255))
-        rect = self.przycisk.get_rect()
-        rect.move_ip(rozmiar_przycisku[0] / 2 - text.get_size()[0] / 2, 10)
-        self.przycisk.blit(text, rect)
-
-        rect = surface.get_rect()
-        rect.move_ip(surface.get_rect().centerx - self.przycisk.get_rect().width/2, surface.get_rect().bottom-self.przycisk.get_size()[1]-10)
-        self.przycisk_rect = rect
-        surface.blit(self.przycisk, rect)
+        self.dodaj_przycisk(surface, "ok", kolor_czcionki, 0)
 
         self.obiektNaWierzchu = ObiektNaWierzchu(screen, cords, surface)
         self.obiektNaWierzchu.update()
+
+    def dodaj_przycisk(self, surface, tekst, kolor_czcionki, wychylenie_wzgledem_osii_symetri):
+        rozmiar_przycisku = (100, 60)
+        przycisk = pygame.Surface(rozmiar_przycisku)
+        przycisk.fill((255, 255, 255))
+        basicfont = pygame.font.SysFont(None, 48)
+        text = basicfont.render(tekst, True, kolor_czcionki, (255, 255, 255))
+        rect = przycisk.get_rect()
+        rect.move_ip(rozmiar_przycisku[0] / 2 - text.get_size()[0] / 2, 10)
+        self.przycisk_rect =rect
+        przycisk.blit(text, rect)
+        surf_rect = surface.get_rect()
+        rect.move_ip(surf_rect.centerx - przycisk.get_rect().width / 2 - wychylenie_wzgledem_osii_symetri,
+                     surf_rect.bottom - przycisk.get_size()[1]-20)
+        surface.blit(przycisk, rect)
 
     def dodaj_tekst(self, surface, tekst, kolor_czcionki, kolor_wypelnienia, cords, poziom):
         basicfont = pygame.font.SysFont(None, 48)
