@@ -4,7 +4,7 @@ from tools import *
 from GlownaPlansza import GlownaPlansza
 from PodniesionyPionek import PodniesionyPionek
 from Komunikat import wyswietl_komunikat_o_wyniku_meczu
-from WybierzTrybGry import  wyswietl_zapytanie_o_tryb_gry
+from WybierzTrybGry import wyswietl_zapytanie_o_tryb_gry
 
 
 def main():
