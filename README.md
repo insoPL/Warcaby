@@ -3,7 +3,7 @@
 
 ##1. Ogólny opis programu.
 Program jest komputerową adaptacją popularnej gry planszowej "Warcaby" [[Wikipedia](https://pl.wikipedia.org/wiki/Warcaby#Zasady_gry)] w języku Python. Każdy z graczy musi wykonać ruch przesuwając swój pionek diagonalnie lub jeśli ma taką możliwość, bijąc pionek przeciwnika przeskaując go. Po tym zaczyna się ruch przeciwnika. Gra kończy się w momencie w którym jeden z graczy nie może już wykonać żadnego ruchu, zwycięzcą zostaje gracz z większą ilością pionków na planszy.
-Program implementuje sztuczną inteligencje korzystając z algorytmu minmax oraz używa modułu pygame w celu obsługi grafiki oraz urządzeń wejścia.
+Program implementuje sztuczną inteligencje korzystając z algorytmu Minmax oraz używa modułu pygame w celu obsługi grafiki oraz urządzeń wejścia.
 ##2. Uruchomienie programu
 Program napisany jest w języku python2.7 wymaga więc działającego interpretatora tego języka. Aby uruchomić program należy uruchomić w interpretatorze plik Main.py, program do pracy wymaga też modułu [pygame](http://pygame.org/)
 ##3. Opis działania algorytmu AI
